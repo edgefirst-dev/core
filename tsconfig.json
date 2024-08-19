@@ -1,0 +1,8 @@
+{
+	/* Change to `@total-typescript/tsconfig/tsc/dom/library` for DOM usage */
+	"extends": "@total-typescript/tsconfig/tsc/no-dom/library",
+	"include": ["src/index.ts"],
+	"compilerOptions": {
+		"outDir": "./build"
+	}
+}
