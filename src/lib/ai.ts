@@ -118,10 +118,6 @@ export namespace AI {
 export class AI {
 	constructor(protected ai: Ai) {}
 
-	get run() {
-		return this.ai.run.bind(this.ai);
-	}
-
 	async run(
 		model: AI.Model.TextClassification,
 		inputs: AI.Input.TextClassification,
@@ -176,7 +172,7 @@ export class AI {
 		model: AI.Model,
 		inputs: AI.Input,
 		options?: AI.Options,
-	): Promise<AI.Options> {
+	): Promise<AI.Output> {
 		// @ts-expect-error - The Worker AI types expect a specific model, because
 		// we're using a union type, TS marks it as an error, but it's fine since we
 		// are using overloads to handle the different models, inputs and outputs
