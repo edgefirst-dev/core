@@ -1,7 +1,7 @@
 {
-	"name": "package-name",
+	"name": "@edgefirst-dev/core",
 	"version": "0.0.0",
-	"description": "A description of the package",
+	"description": "The core of the Edge-first Stack",
 	"license": "MIT",
 	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"author": {
@@ -11,11 +11,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/sergiodxa/package"
+		"url": "https://github.com/edgefirst-dev/core"
 	},
-	"homepage": "https://sergiodxa.github.io/package",
+	"homepage": "https://github.com/edgefirst-dev/core",
 	"bugs": {
-		"url": "https://github.com/sergiodxa/package/issues"
+		"url": "https://github.com/edgefirst-dev/core/issues"
 	},
 	"scripts": {
 		"build": "tsc",
@@ -34,16 +34,19 @@
 		".": "./build/index.js",
 		"./package.json": "./package.json"
 	},
-	"dependencies": {},
+	"dependencies": { "type-fest": "^4.25.0" },
 	"peerDependencies": {},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.15.3",
 		"@biomejs/biome": "^1.8.3",
+		"@cloudflare/workers-types": "^4.20240815.0",
+		"@remix-run/server-runtime": "^2.11.2",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/bun": "^1.1.6",
 		"consola": "^3.2.3",
 		"typedoc": "^0.26.5",
 		"typedoc-plugin-mdn-links": "^3.2.6",
-		"typescript": "^5.5.4"
+		"typescript": "^5.5.4",
+		"wrangler": "^3.72.0"
 	}
 }
