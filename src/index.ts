@@ -1,6 +1,7 @@
 import { AI } from "./lib/ai.js";
 import { Cache } from "./lib/cache.js";
 import { DB } from "./lib/db.js";
+import { Env } from "./lib/env.js";
 import {
 	EdgeConfigError,
 	EdgeContextError,
@@ -12,7 +13,7 @@ import { Queue } from "./lib/queue.js";
 import { storage } from "./lib/storage.js";
 import type { Bindings } from "./lib/types.js";
 
-export type { AI, Cache, DB, FS, KV, Queue };
+export type { AI, Cache, DB, FS, KV, Queue, Env };
 
 /**
  * The Edge namespace provides access to the various services available in the
@@ -93,9 +94,7 @@ export namespace Edge {
 	 * Access the environment variables in your Edge-first application.
 	 */
 	export function env() {
-		let context = storage.getStore();
-		if (!context) throw new EdgeContextError("Env");
-		return context?.env;
+		return new Env();
 	}
 }
 
