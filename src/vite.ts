@@ -1,4 +1,3 @@
-import type { Request } from "@cloudflare/workers-types";
 import { storage } from "./lib/storage.js";
 import type { CloudflareProxy } from "./lib/types.js";
 

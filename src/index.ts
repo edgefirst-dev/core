@@ -1,3 +1,4 @@
+import type { RequestInitCfProperties } from "@cloudflare/workers-types";
 import { AI } from "./lib/ai.js";
 import { Cache } from "./lib/cache.js";
 import { DB } from "./lib/db.js";
@@ -110,21 +111,6 @@ export namespace Edge {
 		return request;
 	}
 
-	/**
-	 * Access the URL of the request in your Edge-first application.
-	 */
-	export function url() {
-		let request = storage.getStore()?.request;
-		if (!request) throw new EdgeContextError("url");
-		return new URL(request.url);
-	}
-
-	export function headers() {
-		let request = storage.getStore()?.request;
-		if (!request) throw new EdgeContextError("headers");
-		return request.headers;
-	}
-
 	export function signal() {
 		let request = storage.getStore()?.request;
 		if (!request) throw new EdgeContextError("signal");
@@ -138,18 +124,19 @@ export namespace Edge {
 	export function geo() {
 		let request = storage.getStore()?.request;
 		if (!request) throw new EdgeContextError("geo");
-		if (!request.cf) throw new EdgeRequestGeoError();
+		if (!("cf" in request)) throw new EdgeRequestGeoError();
+		let cf = request.cf as RequestInitCfProperties;
 		return {
-			country: request.cf.country,
-			region: request.cf.region,
-			city: request.cf.city,
-			postalCode: request.cf.postalCode,
-			latitude: request.cf.latitude,
-			longitude: request.cf.longitude,
-			timezone: request.cf.timezone,
-			metroCode: request.cf.metroCode,
-			continent: request.cf.continent,
-			isEurope: request.cf.isEUCountry === "1",
+			country: cf.country,
+			region: cf.region,
+			city: cf.city,
+			postalCode: cf.postalCode,
+			latitude: cf.latitude,
+			longitude: cf.longitude,
+			timezone: cf.timezone,
+			metroCode: cf.metroCode,
+			continent: cf.continent,
+			isEurope: cf.isEUCountry === "1",
 		};
 	}
 }
