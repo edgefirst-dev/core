@@ -5,5 +5,5 @@ import type { Bindings } from "./lib/types.js";
 export function edgeRuntime() {
 	return createMiddleware<{
 		Bindings: Bindings;
-	}>(storage.run);
+	}>((c, next) => storage.run(c, next));
 }
