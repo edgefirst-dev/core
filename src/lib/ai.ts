@@ -1,5 +1,7 @@
 import type {
 	Ai,
+	GatewayOptions as AiGatewayOptions,
+	AiTextGenerationInput,
 	BaseAiImageClassification,
 	BaseAiImageClassificationModels,
 	BaseAiImageToText,
@@ -101,12 +103,7 @@ export namespace AI {
 		| Output.TextClassification
 		| Output.ImageClassification;
 
-	export interface GatewayOptions {
-		id: string;
-		cacheTtl?: number;
-		skipCache?: boolean;
-		metadata?: Record<string, number | string | boolean | null | bigint>;
-	}
+	export interface GatewayOptions extends AiGatewayOptions {}
 
 	export interface Options {
 		gateway?: GatewayOptions;
@@ -115,6 +112,9 @@ export namespace AI {
 	}
 }
 
+/**
+ * Run machine learning models, such as LLMs in your Edge-first application.
+ */
 export class AI {
 	constructor(protected ai: Ai) {}
 

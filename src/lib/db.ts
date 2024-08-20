@@ -1,7 +1,9 @@
 import { D1Database } from "@cloudflare/workers-types";
 
-export namespace DB {}
-
+/**
+ * Access a SQL database in your Edge-first application to store and retrieve
+ * relational data.
+ */
 export class DB {
 	constructor(protected db: D1Database) {}
 

@@ -1,8 +1,8 @@
 import type { KVNamespace } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
+import type { WaitUntilFunction } from "./types.js";
 
 export namespace Cache {
-	export type WaitUntilFunction = (promise: Promise<unknown>) => void;
 	export namespace Fetch {
 		export interface Options {
 			/**
@@ -19,10 +19,13 @@ export namespace Cache {
 	}
 }
 
+/**
+ * Cache functions result in your Edge-first applications.
+ */
 export class Cache {
 	constructor(
 		protected kv: KVNamespace,
-		protected waitUntil: Cache.WaitUntilFunction,
+		protected waitUntil: WaitUntilFunction,
 	) {}
 
 	async fetch<T extends Jsonifiable>(

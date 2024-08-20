@@ -1,6 +1,6 @@
 import {
+	type Bindings,
 	type EdgeFirstContext,
-	type EdgeFirstEnv,
 	storage,
 } from "./lib/storage.js";
 
@@ -15,4 +15,4 @@ export function getLoadContext(args: getLoadContext.FunctionArgs) {
 	return storage.run(args.context.cloudflare, () => args.context);
 }
 
-export type { EdgeFirstEnv };
+export type { Bindings as EdgeFirstEnv };

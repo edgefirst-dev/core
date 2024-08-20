@@ -32,6 +32,7 @@
 	"files": ["build", "package.json", "README.md"],
 	"exports": {
 		".": "./build/index.js",
+		"./vite": "./build/vite.js",
 		"./package.json": "./package.json"
 	},
 	"dependencies": { "type-fest": "^4.25.0" },
