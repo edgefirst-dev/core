@@ -32,12 +32,13 @@
 	"files": ["build", "package.json", "README.md"],
 	"exports": {
 		".": "./build/index.js",
-		"./vite": "./build/vite.js",
+		"./hono": "./build/hono.js",
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
 		"@cloudflare/workers-types": "^4.20240815.0",
 		"@remix-run/server-runtime": "^2.11.2",
+		"hono": "^4.5.6",
 		"type-fest": "^4.25.0"
 	},
 	"peerDependencies": {},
