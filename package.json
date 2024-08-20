@@ -36,14 +36,13 @@
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
+		"@cloudflare/workers-types": "^4.20240815.0",
 		"type-fest": "^4.25.0"
 	},
 	"peerDependencies": {},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.15.3",
 		"@biomejs/biome": "^1.8.3",
-		"@cloudflare/workers-types": "^4.20240815.0",
-		"@remix-run/server-runtime": "^2.11.2",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/bun": "^1.1.6",
 		"consola": "^3.2.3",
