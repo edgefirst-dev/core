@@ -1,4 +1,4 @@
-import { D1Database } from "@cloudflare/workers-types";
+import type { D1Database } from "@cloudflare/workers-types";
 
 /**
  * Access a SQL database in your Edge-first application to store and retrieve
