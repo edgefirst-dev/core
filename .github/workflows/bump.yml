@@ -40,5 +40,5 @@ jobs:
       - run: bun run quality:fix
       - run: git add .
       - run: git commit --amend --no-edit
-      - run: git tag -f v$(node -p "require('./package.json').version")
+      - run: git tag v$(node -p "require('./package.json').version")
       - run: git push origin main --follow-tags
