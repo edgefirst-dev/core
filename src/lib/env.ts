@@ -20,7 +20,7 @@ export class Env {
 	): Bindings[Key] {
 		let env = storage.getStore()?.cloudflare.env;
 
-		if (!env) throw new EdgeContextError("Edge.env.fetch");
+		if (!env) throw new EdgeContextError("env().fetch");
 
 		let data = env[key];
 		if (data) return data;
