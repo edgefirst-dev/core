@@ -11,6 +11,10 @@ on:
           - major
           - minor
           - patch
+          - premajor
+          - preminor
+          - prepatch
+          - prerelease
 
 jobs:
   bump-version:
