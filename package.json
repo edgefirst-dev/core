@@ -43,6 +43,7 @@
 	},
 	"dependencies": {
 		"@cloudflare/workers-types": "^4.20240815.0",
+		"@remix-run/server-runtime": "^2.11.2",
 		"type-fest": "^4.25.0"
 	},
 	"peerDependencies": {},
