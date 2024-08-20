@@ -36,9 +36,5 @@ jobs:
           git config user.name 'Sergio Xalambrí'
           git config user.email 'hello@sergiodxa.com'
 
-      - run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
-      - run: bun run quality:fix
-      - run: git add .
-      - run: git commit --amend --no-edit
-      - run: git tag v$(node -p "require('./package.json').version")
+      - run: npm version ${{ github.event.inputs.version }}
       - run: git push origin main --follow-tags
