@@ -1,7 +1,6 @@
 import type {
 	Ai,
 	GatewayOptions as AiGatewayOptions,
-	AiTextGenerationInput,
 	BaseAiImageClassification,
 	BaseAiImageClassificationModels,
 	BaseAiImageToText,
