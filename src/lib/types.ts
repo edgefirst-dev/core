@@ -14,7 +14,7 @@ export type CfProperties = Record<string, unknown>;
 
 export type CloudflareProxy = Omit<
 	PlatformProxy<Bindings, CfProperties>,
-	"dispose"
+	"dispose" | "caches"
 >;
 
 export interface Bindings {
