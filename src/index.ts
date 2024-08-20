@@ -6,6 +6,7 @@ import {
 	EdgeConfigError,
 	EdgeContextError,
 	EdgeEnvKeyError,
+	EdgeRequestGeoError,
 } from "./lib/errors.js";
 import { FS } from "./lib/fs.js";
 import { KV } from "./lib/kv.js";
@@ -25,9 +26,9 @@ export namespace Edge {
 	 * application.
 	 */
 	export function kv() {
-		let context = storage.getStore();
-		if (!context) throw new EdgeContextError("kv");
-		if ("KV" in context.env) return new KV(context.env.KV);
+		let cloudflare = storage.getStore()?.cloudflare;
+		if (!cloudflare) throw new EdgeContextError("kv");
+		if ("KV" in cloudflare.env) return new KV(cloudflare.env.KV);
 		throw new EdgeConfigError("KV");
 	}
 
@@ -36,9 +37,9 @@ export namespace Edge {
 	 * unstructured data in your Edge-first application.
 	 */
 	export function fs() {
-		let context = storage.getStore();
-		if (!context) throw new EdgeContextError("fs");
-		if ("FS" in context.env) return new FS(context.env.FS);
+		let cloudflare = storage.getStore()?.cloudflare;
+		if (!cloudflare) throw new EdgeContextError("fs");
+		if ("FS" in cloudflare.env) return new FS(cloudflare.env.FS);
 		throw new EdgeConfigError("FS");
 	}
 
@@ -46,10 +47,13 @@ export namespace Edge {
 	 * Cache functions result in your Edge-first applications.
 	 */
 	export function cache() {
-		let context = storage.getStore();
-		if (!context) throw new EdgeContextError("cache");
-		if ("KV" in context.env) {
-			return new Cache(context.env.KV, context.ctx.waitUntil.bind(context.ctx));
+		let cloudflare = storage.getStore()?.cloudflare;
+		if (!cloudflare) throw new EdgeContextError("cache");
+		if ("KV" in cloudflare.env) {
+			return new Cache(
+				cloudflare.env.KV,
+				cloudflare.ctx.waitUntil.bind(cloudflare.ctx),
+			);
 		}
 		throw new EdgeConfigError("KV");
 	}
@@ -59,9 +63,9 @@ export namespace Edge {
 	 * relational data.
 	 */
 	export function db() {
-		let context = storage.getStore();
-		if (!context) throw new EdgeContextError("db");
-		if ("DB" in context.env) return new DB(context.env.DB);
+		let cloudflare = storage.getStore()?.cloudflare;
+		if (!cloudflare) throw new EdgeContextError("db");
+		if ("DB" in cloudflare.env) return new DB(cloudflare.env.DB);
 		throw new EdgeConfigError("DB");
 	}
 
@@ -69,9 +73,9 @@ export namespace Edge {
 	 * Run machine learning models, such as LLMs in your Edge-first application.
 	 */
 	export function unstable_ai() {
-		let context = storage.getStore();
-		if (!context) throw new EdgeContextError("ai");
-		if ("AI" in context.env) return new AI(context.env.AI);
+		let cloudflare = storage.getStore()?.cloudflare;
+		if (!cloudflare) throw new EdgeContextError("ai");
+		if ("AI" in cloudflare.env) return new AI(cloudflare.env.AI);
 		throw new EdgeConfigError("AI");
 	}
 
@@ -79,12 +83,12 @@ export namespace Edge {
 	 * Enqueue for processing later any kind of payload of data.
 	 */
 	export function unstable_queue() {
-		let context = storage.getStore();
-		if (!context) throw new EdgeContextError("queue");
-		if ("Queue" in context.env) {
+		let cloudflare = storage.getStore()?.cloudflare;
+		if (!cloudflare) throw new EdgeContextError("queue");
+		if ("Queue" in cloudflare.env) {
 			return new Queue(
-				context.env.QUEUE,
-				context.ctx.waitUntil.bind(context.ctx),
+				cloudflare.env.QUEUE,
+				cloudflare.ctx.waitUntil.bind(cloudflare.ctx),
 			);
 		}
 		throw new EdgeConfigError("Queue");
@@ -96,8 +100,65 @@ export namespace Edge {
 	export function env() {
 		return new Env();
 	}
+
+	/**
+	 * Access the request object in your Edge-first application.
+	 */
+	export function request() {
+		let request = storage.getStore()?.request;
+		if (!request) throw new EdgeContextError("request");
+		return request;
+	}
+
+	/**
+	 * Access the URL of the request in your Edge-first application.
+	 */
+	export function url() {
+		let request = storage.getStore()?.request;
+		if (!request) throw new EdgeContextError("url");
+		return new URL(request.url);
+	}
+
+	export function headers() {
+		let request = storage.getStore()?.request;
+		if (!request) throw new EdgeContextError("headers");
+		return request.headers;
+	}
+
+	export function signal() {
+		let request = storage.getStore()?.request;
+		if (!request) throw new EdgeContextError("signal");
+		return request.signal;
+	}
+
+	/**
+	 * Access the geolocation information of the request in your Edge-first
+	 * application.
+	 */
+	export function geo() {
+		let request = storage.getStore()?.request;
+		if (!request) throw new EdgeContextError("geo");
+		if (!request.cf) throw new EdgeRequestGeoError();
+		return {
+			country: request.cf.country,
+			region: request.cf.region,
+			city: request.cf.city,
+			postalCode: request.cf.postalCode,
+			latitude: request.cf.latitude,
+			longitude: request.cf.longitude,
+			timezone: request.cf.timezone,
+			metroCode: request.cf.metroCode,
+			continent: request.cf.continent,
+			isEurope: request.cf.isEUCountry === "1",
+		};
+	}
 }
 
-export { EdgeConfigError, EdgeContextError, EdgeEnvKeyError };
+export {
+	EdgeConfigError,
+	EdgeContextError,
+	EdgeEnvKeyError,
+	EdgeRequestGeoError,
+};
 
 export type { Bindings };

@@ -21,3 +21,9 @@ export class EdgeEnvKeyError extends Error {
 		super(`Key not found: ${key}`);
 	}
 }
+
+export class EdgeRequestGeoError extends Error {
+	override name = "EdgeRequestGeoError";
+	override message =
+		"The request object does not contain the 'cf' property required to access the geolocation information.";
+}
