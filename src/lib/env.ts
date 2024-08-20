@@ -1,5 +1,6 @@
 import { EdgeContextError, EdgeEnvKeyError } from "./errors.js";
-import { type Bindings, storage } from "./storage.js";
+import { storage } from "./storage.js";
+import type { Bindings } from "./types.js";
 
 /**
  * Access environment variables in your Edge-first application.
@@ -13,7 +14,10 @@ export class Env {
 	 * @param fallback An optional fallback value to return if the key is not found.
 	 * @returns
 	 */
-	fetch<K extends keyof Bindings>(key: K, fallback?: Bindings[K]): Bindings[K] {
+	fetch<Key extends keyof Bindings>(
+		key: Key,
+		fallback?: Bindings[Key],
+	): Bindings[Key] {
 		let env = storage.getStore()?.env;
 
 		if (!env) throw new EdgeContextError("Edge.env.fetch");

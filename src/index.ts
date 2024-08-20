@@ -10,6 +10,7 @@ import { FS } from "./lib/fs.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
 import { storage } from "./lib/storage.js";
+import type { Bindings } from "./lib/types.js";
 
 export type { AI, Cache, DB, FS, KV, Queue };
 
@@ -99,3 +100,5 @@ export namespace Edge {
 }
 
 export { EdgeConfigError, EdgeContextError, EdgeEnvKeyError };
+
+export type { Bindings };
