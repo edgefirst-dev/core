@@ -24,7 +24,9 @@ import { getLoadContext } from "@edgefirst-dev/core/vite";
 
 export default defineConfig({
   plugins: [
-    cloudflare({ getLoadContext }),
+    cloudflare({
+      getLoadContext: getLoadContext(({ context }) => context),
+    }),
 
     remix({
       future: {
