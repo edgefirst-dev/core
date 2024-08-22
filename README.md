@@ -44,11 +44,11 @@ export default defineConfig({
 Now you can import Edge namespace from `@edgefirst-dev/core` and use it in any part of your Remix app.
 
 ```ts
-import { Edge } from "@edgefirst-dev/core";
+import { kv } from "@edgefirst-dev/core";
 
-let { items, meta } = await Edge.kv().keys();
-let { data, meta } = await Edge.kv().get("prefix:key");
-await Edge.kv().set(
+let { items, meta } = await kv().keys();
+let { data, meta } = await kv().get("prefix:key");
+await kv().set(
   "prefix:key",
   { date: new Date() },
   { ttl: 3600, metadata: { key: "value" } }

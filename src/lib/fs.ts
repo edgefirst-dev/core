@@ -25,17 +25,27 @@ export namespace FS {
 	}
 
 	export namespace List {
-		export type Prefix = string;
-
 		export interface Options {
 			/**
-			 * The maximum number of files to return per request. Defaults to 1000.
+			 * The prefix to match keys against. Keys will only be returned if they
+			 * start with given prefix
+			 */
+			prefix?: string;
+			/**
+			 * The number of results to return. Maximum of `1000`.
+			 * @default 1000
 			 */
 			limit?: number;
 			/**
-			 * The cursor to continue from a previous list operation
+			 * An opaque token that indicates where to continue listing objects from.
+			 * A cursor can be retrieved from a previous list operation.
 			 */
 			cursor?: string;
+			/**
+			 * The character to use when grouping keys.
+			 * @default "/"
+			 */
+			delimiter?: string;
 		}
 
 		export interface Result {
@@ -48,9 +58,9 @@ export namespace FS {
 			 */
 			done: boolean;
 			/**
-			 * The cursor to use when fetching more files.
+			 * An opaque token that indicates where to continue listing objects from.
 			 */
-			cursor?: string;
+			cursor: string | null;
 		}
 	}
 
@@ -113,11 +123,29 @@ export namespace FS {
 export class FS {
 	constructor(protected fs: R2Bucket) {}
 
-	async list(
-		prefix?: FS.List.Prefix,
-		options: FS.List.Options = {},
-	): Promise<FS.List.Result> {
-		throw new Error("Not implemented");
+	async list(options: FS.List.Options = {}): Promise<FS.List.Result> {
+		let result = await this.fs.list({
+			cursor: options.cursor,
+			limit: options.limit ?? 1000,
+			prefix: options.prefix,
+			delimiter: options.delimiter ?? "/",
+		});
+
+		let files = result.objects.map((object) => {
+			return {
+				pathname: object.key,
+				contentType: object.httpMetadata?.contentType,
+				size: object.size,
+				uploadedAt: object.uploaded,
+				meta: object.customMetadata,
+			};
+		});
+
+		if (result.truncated) {
+			return { done: false, files, cursor: result.cursor };
+		}
+
+		return { done: true, files, cursor: null };
 	}
 
 	async serve(pathname: FS.Serve.Pathname): Promise<Response> {
