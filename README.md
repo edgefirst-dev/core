@@ -108,7 +108,7 @@ await fs().remove("key");
 let response = await fs().serve("key");
 ```
 
-#### db()
+### db()
 
 The `db` function gives you access to a database object powered by Cloudflare D1.
 
@@ -123,7 +123,7 @@ export const db = drizzle(edgeDb(), { schema });
 export { schema };
 ```
 
-#### cache()
+### cache()
 
 The `cache` function gives you access to a cache object powered by Cloudflare Worker KV.
 
