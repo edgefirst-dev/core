@@ -141,6 +141,37 @@ await cache().fetch("another-key", async () => {
 });
 ```
 
+### request()
+
+The `request` function gives you access to the current request object.
+
+```ts
+import { request } from "@edgefirst-dev/core";
+
+let url = new URL(request().url);
+request().headers.get("Authorization");
+```
+
+### headers()
+
+The `headers` function gives you access to the current request headers using [@mjackson/headers](https://github.com/mjackson/headers)
+
+```ts
+import { headers } from "@edgefirst-dev/core";
+
+headers().cacheControl.maxAge;
+// And other properties of the library
+```
+
+### signal()
+
+The `signal` function gives you access to the current request signal.
+
+```ts
+import { signal } from "@edgefirst-dev/core";
+signal().aborted;
+```
+
 ### unstable_ai
 
 The `unstable_ai` object gives you access to the AI services powered by Cloudflare AI.
