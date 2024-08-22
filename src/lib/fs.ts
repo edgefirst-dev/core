@@ -1,31 +1,8 @@
 import type { R2Bucket } from "@cloudflare/workers-types";
 
 export namespace FS {
-	export interface File {
-		/**
-		 * The pathname of the file.
-		 */
-		pathname: string;
-		/**
-		 * The content type of the file.
-		 */
-		contentType: string | undefined;
-		/**
-		 * The size of the file in bytes.
-		 */
-		size: number;
-		/**
-		 * The date the file was uploaded.
-		 */
-		uploadedAt: Date;
-		/**
-		 * The metadata stored along the file.
-		 */
-		meta?: Record<string, string>;
-	}
-
-	export namespace List {
-		export interface Options {
+	export namespace Keys {
+		export type Options = {
 			/**
 			 * The prefix to match keys against. Keys will only be returned if they
 			 * start with given prefix
@@ -46,73 +23,11 @@ export namespace FS {
 			 * @default "/"
 			 */
 			delimiter?: string;
-		}
+		};
 
-		export interface Result {
-			/**
-			 * The list of files.
-			 */
-			files: File[];
-			/**
-			 * Whether there are more files to fetch.
-			 */
-			done: boolean;
-			/**
-			 * An opaque token that indicates where to continue listing objects from.
-			 */
-			cursor: string | null;
-		}
-	}
-
-	export namespace Upload {
-		export type Pathname = string;
-
-		export type Body =
-			| string
-			| ReadableStream
-			| ArrayBuffer
-			| ArrayBufferView
-			| Blob;
-
-		export interface Options {
-			/**
-			 * The content type of the file. If not given, it will be inferred from the Blob or the file extension
-			 */
-			contentType?: string;
-			/**
-			 * The content length of the blob..
-			 */
-			contentLength?: string;
-			/**
-			 * If `true`, a random suffix will be added to the blob's name.
-			 * @default false
-			 */
-			addRandomSuffix?: boolean;
-			/**
-			 * The prefix to use for the file pathname
-			 */
-			prefix?: string;
-			/**
-			 * An object with custom metadata to store with the blob
-			 */
-			meta?: Record<string, string>;
-		}
-	}
-
-	export namespace Serve {
-		export type Pathname = string;
-	}
-
-	export namespace Head {
-		export type Pathname = string;
-	}
-
-	export namespace Download {
-		export type Pathname = string;
-	}
-
-	export namespace Delete {
-		export type Pathname = string;
+		export type Result =
+			| { keys: string[]; done: false; cursor: string }
+			| { keys: string[]; done: true; cursor: null };
 	}
 }
 
@@ -121,54 +36,64 @@ export namespace FS {
  * unstructured data in your Edge-first application.
  */
 export class FS {
-	constructor(protected fs: R2Bucket) {}
+	constructor(protected r2: R2Bucket) {}
 
-	async list(options: FS.List.Options = {}): Promise<FS.List.Result> {
-		let result = await this.fs.list({
-			cursor: options.cursor,
-			limit: options.limit ?? 1000,
-			prefix: options.prefix,
-			delimiter: options.delimiter ?? "/",
+	/**
+	 * Returns a list of all keys in storage.
+	 */
+	async keys(options: FS.Keys.Options = {}): Promise<FS.Keys.Result> {
+		let result = await this.r2.list(options);
+		let keys = result.objects.map((object) => object.key);
+		if (result.truncated) return { keys, done: false, cursor: result.cursor };
+		return { keys, done: true, cursor: null };
+	}
+
+	/**
+	 * Returns `true` if a file with the given key exists, `false` otherwise.
+	 */
+	async has(key: string) {
+		let object = await this.r2.get(key);
+		return object !== null;
+	}
+
+	/**
+	 * Puts a file in storage at the given key.
+	 */
+	async put(key: string, file: File) {
+		await this.r2.put(key, await file.arrayBuffer());
+	}
+
+	/**
+	 * Returns the file with the given key, or `null` if no such key exists.
+	 */
+	async get(key: string) {
+		let object = await this.r2.get(key);
+		if (!object) return null;
+
+		let arrayBuffer = await object.arrayBuffer();
+
+		return new File([arrayBuffer], key, {
+			type: object.httpMetadata?.contentType,
+			lastModified: object.uploaded.getTime(),
 		});
-
-		let files = result.objects.map((object) => {
-			return {
-				pathname: object.key,
-				contentType: object.httpMetadata?.contentType,
-				size: object.size,
-				uploadedAt: object.uploaded,
-				meta: object.customMetadata,
-			};
-		});
-
-		if (result.truncated) {
-			return { done: false, files, cursor: result.cursor };
-		}
-
-		return { done: true, files, cursor: null };
 	}
 
-	async serve(pathname: FS.Serve.Pathname): Promise<Response> {
-		throw new Error("Not implemented");
+	/**
+	 * Removes the file with the given key from storage.
+	 */
+	async remove(key: string) {
+		await this.r2.delete(key);
 	}
 
-	async head(pathname: FS.Head.Pathname): Promise<FS.File> {
-		throw new Error("Not implemented");
-	}
-
-	async upload(
-		pathname: FS.Upload.Pathname,
-		body: FS.Upload.Body,
-		options: FS.Upload.Options = {},
-	): Promise<FS.File> {
-		throw new Error("Not implemented");
-	}
-
-	async download(pathname: FS.Download.Pathname): Promise<Blob> {
-		throw new Error("Not implemented");
-	}
-
-	async delete(...pathname: FS.Delete.Pathname[]): Promise<void> {
-		throw new Error("Not implemented");
+	/**
+	 * Returns a Response with the file body and correct headers.
+	 * If the file doesn't exits it returns a 404 response with an empty body.
+	 */
+	async serve(key: string) {
+		let object = await this.r2.get(key);
+		if (!object) return new Response(null, { status: 404 });
+		let headers = new Headers();
+		object.writeHttpMetadata(headers);
+		return new Response(object?.body, { headers });
 	}
 }
