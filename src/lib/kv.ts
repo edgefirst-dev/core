@@ -21,43 +21,9 @@ export namespace KV {
 			cursor?: string;
 		}
 
-		export namespace Output {
-			export type Done = {
-				/**
-				 * The lsit of keys.
-				 */
-				items: Array<Key>;
-				meta: {
-					/**
-					 * The cursor to use when fetching more pages of keys.
-					 */
-					cursor: null;
-					/**
-					 * Whether there are more keys to fetch
-					 */
-					done: true;
-				};
-			};
-
-			export type NotDone = {
-				/**
-				 * The list of keys.
-				 */
-				items: Array<Key>;
-				meta: {
-					/**
-					 * The cursor to use when fetching more pages of keys.
-					 */
-					cursor: string;
-					/**
-					 * Whether there are more keys to fetch
-					 */
-					done: false;
-				};
-			};
-		}
-
-		export type Output = Output.Done | Output.NotDone;
+		export type Result =
+			| { keys: Key[]; cursor: null; done: true }
+			| { keys: Key[]; cursor: string; done: false };
 	}
 
 	export namespace Get {
@@ -78,7 +44,7 @@ export namespace KV {
 		}
 	}
 
-	export namespace Set {
+	export namespace Put {
 		export type Key = string;
 		export type Value = Jsonifiable;
 		export type Meta = Record<string, string>;
@@ -100,7 +66,7 @@ export namespace KV {
 		export type Output = boolean;
 	}
 
-	export namespace Del {
+	export namespace Remove {
 		export type Key = string;
 	}
 }
@@ -120,17 +86,17 @@ export class KV {
 	async keys(
 		prefix?: KV.Keys.Prefix,
 		options: KV.Keys.Options = {},
-	): Promise<KV.Keys.Output> {
+	): Promise<KV.Keys.Result> {
 		let data = await this.kv.list({ prefix, ...options });
-		let items = data.keys.map((key) => {
+		let keys = data.keys.map((key) => {
 			return { name: key.name, meta: key.metadata, ttl: key.expiration };
 		});
 
 		if (data.list_complete) {
-			return { items, meta: { cursor: null, done: true } };
+			return { keys, cursor: null, done: true };
 		}
 
-		return { items, meta: { cursor: data.cursor, done: false } };
+		return { keys, cursor: data.cursor, done: false };
 	}
 
 	/**
@@ -152,10 +118,10 @@ export class KV {
 	 * @param value The value to store, it must be serializable to JSON.
 	 * @param options The options to use when setting the key.
 	 */
-	set<Value extends KV.Set.Value, Meta extends KV.Set.Meta>(
-		key: KV.Set.Key,
+	put<Value extends KV.Put.Value, Meta extends KV.Put.Meta>(
+		key: KV.Put.Key,
 		value: Value,
-		options?: KV.Set.Options<Meta>,
+		options?: KV.Put.Options<Meta>,
 	) {
 		return this.kv.put(key, JSON.stringify(value), {
 			expirationTtl: options?.ttl,
@@ -178,7 +144,7 @@ export class KV {
 	 * Delete an item from the storage.
 	 * @param key The key to delete.
 	 */
-	del(key: KV.Del.Key) {
+	remove(key: KV.Remove.Key) {
 		return this.kv.delete(key);
 	}
 }
