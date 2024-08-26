@@ -18,7 +18,7 @@ export class Env {
 		key: Key,
 		fallback?: Bindings[Key],
 	): Bindings[Key] {
-		let env = storage.getStore()?.env;
+		let env = storage.getStore()?.bindings;
 
 		if (!env) throw new EdgeContextError("env().fetch");
 
