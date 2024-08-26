@@ -12,7 +12,7 @@ export class DB {
 	 * This is useful if you need to integrate with a library that expects a D1
 	 * database connection like Drizzle
 	 */
-	get connection() {
+	get binding() {
 		return this.db;
 	}
 

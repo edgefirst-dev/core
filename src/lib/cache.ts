@@ -3,11 +3,10 @@ import type { Jsonifiable } from "type-fest";
 import type { WaitUntilFunction } from "./types.js";
 
 export namespace Cache {
+	export type Key = string;
+	export type TTL = number;
+
 	export namespace Fetch {
-		export type Key = string;
-
-		export type TTL = number;
-
 		export interface Options {
 			/**
 			 * The key to use for the cache
@@ -27,10 +26,17 @@ export namespace Cache {
  * Cache functions result in your Edge-first applications.
  */
 export class Cache {
+	protected prefix = "cache";
+	protected separator = ":";
+
 	constructor(
 		protected kv: KVNamespace,
 		protected waitUntil: WaitUntilFunction,
 	) {}
+
+	get binding() {
+		return this.kv;
+	}
 
 	/**
 	 * Fetches a value from the cache, or calls the given function if the cache
@@ -40,20 +46,20 @@ export class Cache {
 	 * @param callback The function to call if the cache is not found
 	 */
 	async fetch<T extends Jsonifiable>(
-		key: Cache.Fetch.Key,
+		key: Cache.Key,
 		cb: Cache.Fetch.CallbackFunction<T>,
 	): Promise<T>;
 	async fetch<T extends Jsonifiable>(
-		key: Cache.Fetch.Key,
-		ttl: Cache.Fetch.TTL,
+		key: Cache.Key,
+		ttl: Cache.TTL,
 		callback: Cache.Fetch.CallbackFunction<T>,
 	): Promise<T>;
 	async fetch<T extends Jsonifiable>(
-		key: Cache.Fetch.Key,
-		ttlOrCb: Cache.Fetch.TTL | Cache.Fetch.CallbackFunction<T>,
+		key: Cache.Key,
+		ttlOrCb: Cache.TTL | Cache.Fetch.CallbackFunction<T>,
 		callback?: Cache.Fetch.CallbackFunction<T>,
 	): Promise<T> {
-		let cacheKey = `cache:${key}`;
+		let cacheKey = this.key(key);
 
 		let cached = await this.kv.get<T>(cacheKey, "json");
 		if (cached) return cached;
@@ -69,15 +75,38 @@ export class Cache {
 		return result;
 	}
 
-	private ttl<T>(
-		ttlOrCb: Cache.Fetch.TTL | Cache.Fetch.CallbackFunction<T>,
-	): number {
+	/**
+	 * Delete a specific cache key, or all keys if no key is provided.
+	 * @param key The cache key to delete, always prefixed by `cache:`
+	 */
+	async purge(key?: Cache.Key) {
+		if (key) return this.waitUntil(this.kv.delete(this.key(key)));
+
+		let keys: KVNamespaceListKey<unknown, string>[] = [];
+		let hasMore = false;
+
+		while (hasMore) {
+			let result = await this.kv.list({
+				prefix: `this.prefix}${this.separator}`,
+			});
+			keys.push(...result.keys);
+			hasMore = result.list_complete;
+		}
+
+		this.waitUntil(Promise.all(keys.map((key) => this.kv.delete(key.name))));
+	}
+
+	protected key(key: Cache.Key): string {
+		return [this.prefix, key].join(this.separator);
+	}
+
+	private ttl<T>(ttlOrCb: Cache.TTL | Cache.Fetch.CallbackFunction<T>): number {
 		if (typeof ttlOrCb === "number") return ttlOrCb;
 		return 60;
 	}
 
 	private cb<T>(
-		ttlOrCb: Cache.Fetch.TTL | Cache.Fetch.CallbackFunction<T>,
+		ttlOrCb: Cache.TTL | Cache.Fetch.CallbackFunction<T>,
 		callback?: Cache.Fetch.CallbackFunction<T>,
 	): Cache.Fetch.CallbackFunction<T> {
 		let cb: Cache.Fetch.CallbackFunction<T> | null = null;

@@ -2,11 +2,11 @@ import type { KVNamespace } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
 
 export namespace KV {
-	export interface Key {
+	export interface Key<Meta = unknown> {
 		/** The name of the key. */
 		name: string;
 		/** The metadata stored along the key. */
-		meta: unknown;
+		meta: Meta | undefined;
 		/** The time-to-live of the key. */
 		ttl?: number;
 	}
@@ -21,9 +21,9 @@ export namespace KV {
 			cursor?: string;
 		}
 
-		export type Result =
-			| { keys: Key[]; cursor: null; done: true }
-			| { keys: Key[]; cursor: string; done: false };
+		export type Result<Meta = unknown> =
+			| { keys: Key<Meta>[]; cursor: null; done: true }
+			| { keys: Key<Meta>[]; cursor: string; done: false };
 	}
 
 	export namespace Get {
@@ -78,16 +78,32 @@ export namespace KV {
 export class KV {
 	constructor(protected kv: KVNamespace) {}
 
+	get binding() {
+		return this.kv;
+	}
+
 	/**
 	 * Retrieves all keys from the KV storage.
 	 * @param prefix The prefix to filter keys by.
 	 * @param options The options to use when fetching keys.
 	 */
-	async keys(
-		prefix?: KV.Keys.Prefix,
-		options: KV.Keys.Options = {},
-	): Promise<KV.Keys.Result> {
-		let data = await this.kv.list({ prefix, ...options });
+	async keys<Meta = unknown>(
+		prefix: KV.Keys.Prefix,
+		options?: KV.Keys.Options,
+	): Promise<KV.Keys.Result<Meta>>;
+	async keys<Meta = unknown>(
+		options?: KV.Keys.Options,
+	): Promise<KV.Keys.Result<Meta>>;
+	async keys<Meta = unknown>(): Promise<KV.Keys.Result<Meta>>;
+	async keys<Meta = unknown>(
+		prefixOrOptions?: KV.Keys.Prefix | KV.Keys.Options,
+		maybeOptions: KV.Keys.Options = {},
+	): Promise<KV.Keys.Result<Meta>> {
+		let prefix = typeof prefixOrOptions === "string" ? prefixOrOptions : "";
+		let options =
+			typeof prefixOrOptions === "object" ? prefixOrOptions : maybeOptions;
+
+		let data = await this.kv.list<Meta>({ prefix, ...options });
 		let keys = data.keys.map((key) => {
 			return { name: key.name, meta: key.metadata, ttl: key.expiration };
 		});

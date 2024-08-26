@@ -39,6 +39,10 @@ export namespace FS {
 export class FS implements FileStorage {
 	constructor(protected r2: R2Bucket) {}
 
+	get binding() {
+		return this.r2;
+	}
+
 	/**
 	 * Returns a list of all keys in storage.
 	 */

@@ -24,6 +24,10 @@ export class Queue {
 		protected waitUntil: WaitUntilFunction,
 	) {}
 
+	get binding() {
+		return this.queue;
+	}
+
 	enqueue<Payload extends Queue.Enqueue.Payload>(
 		payload: Payload,
 		options?: Queue.Enqueue.Options,

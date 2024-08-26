@@ -117,6 +117,10 @@ export namespace AI {
 export class AI {
 	constructor(protected ai: Ai) {}
 
+	get binding() {
+		return this.ai;
+	}
+
 	textToImage(
 		model: AI.Model.TextToImage,
 		inputs: AI.Input.TextToImage,

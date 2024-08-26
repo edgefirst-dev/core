@@ -1,8 +1,10 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import type { Context } from "hono";
-import type { Bindings } from "./types.js";
+import type { Bindings, WaitUntilFunction } from "./types.js";
 
-// biome-ignore lint/suspicious/noExplicitAny: This is ok
-export type EdgeFirstContext = Context<{ Bindings: Bindings }, any, object>;
+export type EdgeFirstContext = {
+	request: Request;
+	bindings: Bindings;
+	waitUntil: WaitUntilFunction;
+};
 
 export const storage = new AsyncLocalStorage<EdgeFirstContext>();

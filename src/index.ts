@@ -11,6 +11,7 @@ import {
 	EdgeRequestGeoError,
 } from "./lib/errors.js";
 import { FS } from "./lib/fs.js";
+import { Geo } from "./lib/geo.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
 import { storage } from "./lib/storage.js";
@@ -25,7 +26,7 @@ export type { AI, Cache, DB, FS, KV, Queue, Env };
 export function fs() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("fs");
-	if ("FS" in c.env) return new FS(c.env.FS);
+	if ("FS" in c.bindings) return new FS(c.bindings.FS);
 	throw new EdgeConfigError("FS");
 }
 
@@ -35,8 +36,8 @@ export function fs() {
 export function cache() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("cache");
-	if ("KV" in c.env) {
-		return new Cache(c.env.KV, c.executionCtx.waitUntil.bind(c.executionCtx));
+	if ("KV" in c.bindings) {
+		return new Cache(c.bindings.KV, c.waitUntil);
 	}
 	throw new EdgeConfigError("KV");
 }
@@ -48,7 +49,7 @@ export function cache() {
 export function db() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("db");
-	if ("DB" in c.env) return new DB(c.env.DB);
+	if ("DB" in c.bindings) return new DB(c.bindings.DB);
 	throw new EdgeConfigError("DB");
 }
 
@@ -66,7 +67,7 @@ export function env() {
 export function kv() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("kv");
-	if ("KV" in c.env) return new KV(c.env.KV);
+	if ("KV" in c.bindings) return new KV(c.bindings.KV);
 	throw new EdgeConfigError("KV");
 }
 
@@ -76,7 +77,7 @@ export function kv() {
 export function request() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("request");
-	return c.req.raw;
+	return c.request;
 }
 
 /**
@@ -86,7 +87,7 @@ export function request() {
 export function signal() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("signal");
-	return c.req.raw.signal;
+	return c.request.signal;
 }
 
 /**
@@ -96,7 +97,7 @@ export function signal() {
 export function headers() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("headers");
-	return new Headers(c.req.raw.headers);
+	return new Headers(c.request.headers);
 }
 
 /**
@@ -105,7 +106,7 @@ export function headers() {
 export function unstable_ai() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("ai");
-	if ("AI" in c.env) return new AI(c.env.AI);
+	if ("AI" in c.bindings) return new AI(c.bindings.AI);
 	throw new EdgeConfigError("AI");
 }
 
@@ -116,20 +117,7 @@ export function unstable_ai() {
 export function unstable_geo() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("geo");
-	let request = c.req as unknown as Request;
-	if (!request.cf) throw new EdgeRequestGeoError();
-	return {
-		country: request.cf.country,
-		region: request.cf.region,
-		city: request.cf.city,
-		postalCode: request.cf.postalCode,
-		latitude: request.cf.latitude,
-		longitude: request.cf.longitude,
-		timezone: request.cf.timezone,
-		metroCode: request.cf.metroCode,
-		continent: request.cf.continent,
-		isEurope: request.cf.isEUCountry === "1",
-	};
+	return new Geo(c.request);
 }
 
 /**
@@ -138,11 +126,8 @@ export function unstable_geo() {
 export function unstable_queue() {
 	let c = storage.getStore();
 	if (!c) throw new EdgeContextError("queue");
-	if ("QUEUE" in c.env) {
-		return new Queue(
-			c.env.QUEUE,
-			c.executionCtx.waitUntil.bind(c.executionCtx),
-		);
+	if ("QUEUE" in c.bindings) {
+		return new Queue(c.bindings.QUEUE, c.waitUntil);
 	}
 	throw new EdgeConfigError("Queue");
 }
