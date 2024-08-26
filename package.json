@@ -36,23 +36,23 @@
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
-		"@cloudflare/workers-types": "^4.20240815.0",
+		"@cloudflare/workers-types": "^4.20240821.1",
 		"@mjackson/file-storage": "^0.1.0",
 		"@mjackson/headers": "^0.6.1",
 		"@remix-run/server-runtime": "^2.11.2",
-		"hono": "^4.5.6",
+		"hono": "^4.5.8",
 		"type-fest": "^4.25.0"
 	},
 	"peerDependencies": {},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.15.3",
+		"@arethetypeswrong/cli": "^0.15.4",
 		"@biomejs/biome": "^1.8.3",
 		"@total-typescript/tsconfig": "^1.0.4",
-		"@types/bun": "^1.1.6",
+		"@types/bun": "^1.1.8",
 		"consola": "^3.2.3",
-		"typedoc": "^0.26.5",
-		"typedoc-plugin-mdn-links": "^3.2.6",
+		"typedoc": "^0.26.6",
+		"typedoc-plugin-mdn-links": "^3.2.10",
 		"typescript": "^5.5.4",
-		"wrangler": "^3.72.0"
+		"wrangler": "^3.72.2"
 	}
 }
