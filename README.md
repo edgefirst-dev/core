@@ -264,12 +264,6 @@ The `cache().purge` method is used to remove a key from the cache.
 cache().purge("key");
 ```
 
-If no key is provided, all keys will be removed.
-
-```ts
-cache().purge();
-```
-
 #### Cache#binding
 
 A read-only property that gives you the `KVNamespace` used by the Cache object.

@@ -76,24 +76,11 @@ export class Cache {
 	}
 
 	/**
-	 * Delete a specific cache key, or all keys if no key is provided.
+	 * Delete a specific cache key.
 	 * @param key The cache key to delete, always prefixed by `cache:`
 	 */
-	async purge(key?: Cache.Key) {
-		if (key) return this.waitUntil(this.kv.delete(this.key(key)));
-
-		let keys: KVNamespaceListKey<unknown, string>[] = [];
-		let hasMore = false;
-
-		while (hasMore) {
-			let result = await this.kv.list({
-				prefix: `this.prefix}${this.separator}`,
-			});
-			keys.push(...result.keys);
-			hasMore = result.list_complete;
-		}
-
-		this.waitUntil(Promise.all(keys.map((key) => this.kv.delete(key.name))));
+	purge(key: Cache.Key) {
+		this.waitUntil(this.kv.delete(this.key(key)));
 	}
 
 	protected key(key: Cache.Key): string {
