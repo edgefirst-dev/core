@@ -1,4 +1,5 @@
 import type { R2Bucket } from "@cloudflare/workers-types";
+import type { FileStorage } from "@mjackson/file-storage";
 
 export namespace FS {
 	export namespace Keys {
@@ -35,7 +36,7 @@ export namespace FS {
  * Upload, store and serve images, videos, music, documents and other
  * unstructured data in your Edge-first application.
  */
-export class FS {
+export class FS implements FileStorage {
 	constructor(protected r2: R2Bucket) {}
 
 	/**
@@ -59,7 +60,7 @@ export class FS {
 	/**
 	 * Puts a file in storage at the given key.
 	 */
-	async put(key: string, file: File) {
+	async set(key: string, file: File) {
 		await this.r2.put(key, await file.arrayBuffer());
 	}
 

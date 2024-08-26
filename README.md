@@ -89,7 +89,7 @@ await kv().remove("prefix:key");
 
 ### fs()
 
-The `fs` function gives you access to a file system object powered by Cloudflare R2.
+The `fs` function gives you an instance of [@mjackson/file-storage](https://github.com/mjackson/file-storage) powered by Cloudflare R2.
 
 ```ts
 import { fs } from "@edgefirst-dev/core";
@@ -98,7 +98,7 @@ let { keys, cursor, done } = await fs().keys();
 
 let file = await fs().get("key");
 
-await fs().put("key", file);
+await fs().set("key", file);
 
 let hasFile = await fs().has("key");
 
@@ -107,6 +107,8 @@ await fs().remove("key");
 // A Response object that can be sent to the browser
 let response = await fs().serve("key");
 ```
+
+The `FS#keys` and `FS#serve` methods are not available in the original library, they are custom methods added by this library.
 
 ### db()
 
