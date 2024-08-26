@@ -30,6 +30,15 @@ export namespace FS {
 			| { keys: string[]; done: false; cursor: string }
 			| { keys: string[]; done: true; cursor: null };
 	}
+
+	export namespace Server {
+		export type Init = ResponseInit & {
+			/**
+			 * The body to use if the file doesn't exist.
+			 */
+			fallback?: BodyInit | null;
+		};
+	}
 }
 
 /**
@@ -92,12 +101,27 @@ export class FS implements FileStorage {
 	/**
 	 * Returns a Response with the file body and correct headers.
 	 * If the file doesn't exits it returns a 404 response with an empty body.
+	 * @param key The key of the file to serve
+	 * @param init The response init object, with an optional fallback body
 	 */
-	async serve(key: string) {
+	async serve(
+		key: string,
+		{ fallback, ...init }: FS.Server.Init = {},
+	): Promise<Response> {
 		let object = await this.r2.get(key);
-		if (!object) return new Response(null, { status: 404 });
+
+		if (!object) {
+			return new Response(fallback ?? null, { status: 404, ...init });
+		}
+
 		let headers = new Headers();
-		object.writeHttpMetadata(headers);
-		return new Response(object?.body, { headers });
+
+		// This may throw, we don't want to break the response
+		try {
+			object.writeHttpMetadata(headers);
+			// biome-ignore lint/suspicious/noEmptyBlockStatements: We don't need to do anything here
+		} catch {}
+
+		return new Response(await object.arrayBuffer(), { headers });
 	}
 }
