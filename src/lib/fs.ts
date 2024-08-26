@@ -1,6 +1,5 @@
 import type { R2Bucket } from "@cloudflare/workers-types";
 import type { FileStorage } from "@mjackson/file-storage";
-import { type LazyContent, LazyFile } from "@mjackson/lazy-file";
 
 export namespace FS {
 	export namespace Keys {
@@ -76,32 +75,8 @@ export class FS implements FileStorage {
 		let object = await this.r2.get(key);
 		if (!object) return null;
 
-		let content: LazyContent = {
-			byteLength: object.size,
-			stream(start = 0, end = object.size) {
-				return new ReadableStream({
-					start(controller) {
-						let reader = object.body.getReader();
-						let offset = start;
-
-						let read = async () => {
-							let { done, value } = await reader.read();
-
-							if (done) return controller.close();
-							controller.enqueue(value);
-
-							offset += value.byteLength;
-							if (offset < end) read();
-							else controller.close();
-						};
-
-						read();
-					},
-				});
-			},
-		};
-
-		return new LazyFile(content, key, {
+		let buffer = await object.arrayBuffer();
+		return new File([buffer], key, {
 			type: object.httpMetadata?.contentType,
 			lastModified: object.uploaded.getTime(),
 		});
