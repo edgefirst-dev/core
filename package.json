@@ -39,6 +39,7 @@
 		"@cloudflare/workers-types": "^4.20240821.1",
 		"@mjackson/file-storage": "^0.2.0",
 		"@mjackson/headers": "^0.6.1",
+		"@mjackson/lazy-file": "^3.0.0",
 		"@remix-run/server-runtime": "^2.11.2",
 		"hono": "^4.5.8",
 		"type-fest": "^4.25.0"
