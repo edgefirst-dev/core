@@ -44,7 +44,7 @@ export namespace KV {
 		}
 	}
 
-	export namespace Put {
+	export namespace Set {
 		export type Key = string;
 		export type Value = Jsonifiable;
 		export type Meta = Record<string, string>;
@@ -118,10 +118,10 @@ export class KV {
 	 * @param value The value to store, it must be serializable to JSON.
 	 * @param options The options to use when setting the key.
 	 */
-	put<Value extends KV.Put.Value, Meta extends KV.Put.Meta>(
-		key: KV.Put.Key,
+	set<Value extends KV.Set.Value, Meta extends KV.Set.Meta>(
+		key: KV.Set.Key,
 		value: Value,
-		options?: KV.Put.Options<Meta>,
+		options?: KV.Set.Options<Meta>,
 	) {
 		return this.kv.put(key, JSON.stringify(value), {
 			expirationTtl: options?.ttl,

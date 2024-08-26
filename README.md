@@ -78,7 +78,7 @@ let { keys, cursor, done } = await kv().keys();
 let { data, meta } = await kv().get("prefix:key");
 
 // Set a key
-await kv().put("prefix:key", value, { ttl: 3600, metadata: { key: "value" } });
+await kv().set("prefix:key", value, { ttl: 3600, metadata: { key: "value" } });
 
 // Check if a key is stored
 let hasKey = await kv().has("prefix:key");
