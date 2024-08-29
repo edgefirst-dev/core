@@ -3,9 +3,7 @@
 	"version": "0.0.14",
 	"description": "The core of the Edge-first Stack",
 	"license": "MIT",
-	"funding": [
-		"https://github.com/sponsors/sergiodxa"
-	],
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"author": {
 		"name": "Sergio Xalambrí",
 		"email": "hello+oss@sergiodxa.com",
@@ -31,11 +29,7 @@
 	"engines": {
 		"node": ">=20.0.0"
 	},
-	"files": [
-		"build",
-		"package.json",
-		"README.md"
-	],
+	"files": ["build", "package.json", "README.md"],
 	"exports": {
 		".": "./build/index.js",
 		"./hono": "./build/hono.js",
@@ -46,6 +40,7 @@
 		"@mjackson/file-storage": "^0.2.0",
 		"@mjackson/headers": "^0.6.1",
 		"@remix-run/server-runtime": "^2.11.2",
+		"drizzle-orm": "^0.33.0",
 		"hono": "^4.5.8",
 		"type-fest": "^4.25.0"
 	},
