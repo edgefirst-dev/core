@@ -15,10 +15,22 @@ import { FS } from "./lib/fs.js";
 import { Geo } from "./lib/geo.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
+import { remember } from "./lib/remember.js";
 import { storage } from "./lib/storage.js";
 import type { Bindings } from "./lib/types.js";
 
 export type { AI, Cache, DB, FS, KV, Queue, Env };
+
+const SYMBOLS = {
+	ai: Symbol(),
+	cache: Symbol(),
+	db: Symbol(),
+	env: Symbol(),
+	fs: Symbol(),
+	kv: Symbol(),
+	orm: Symbol(),
+	queue: Symbol(),
+};
 
 export function internal_store(key: string) {
 	let store = storage.getStore();
@@ -31,18 +43,22 @@ export function internal_store(key: string) {
  * unstructured data in your Edge-first application.
  */
 export function fs() {
-	let c = internal_store("fs");
-	if ("FS" in c.bindings) return new FS(c.bindings.FS);
-	throw new EdgeConfigError("FS");
+	return remember(SYMBOLS.fs, () => {
+		let c = internal_store("fs");
+		if ("FS" in c.bindings) return new FS(c.bindings.FS);
+		throw new EdgeConfigError("FS");
+	});
 }
 
 /**
  * Cache functions result in your Edge-first applications.
  */
 export function cache() {
-	let c = internal_store("cache");
-	if ("KV" in c.bindings) return new Cache(c.bindings.KV, c.waitUntil);
-	throw new EdgeConfigError("KV");
+	return remember(SYMBOLS.cache, () => {
+		let c = internal_store("cache");
+		if ("KV" in c.bindings) return new Cache(c.bindings.KV, c.waitUntil);
+		throw new EdgeConfigError("KV");
+	});
 }
 
 /**
@@ -50,9 +66,11 @@ export function cache() {
  * relational data.
  */
 export function db() {
-	let c = internal_store("db");
-	if ("DB" in c.bindings) return new DB(c.bindings.DB);
-	throw new EdgeConfigError("DB");
+	return remember(SYMBOLS.db, () => {
+		let c = internal_store("db");
+		if ("DB" in c.bindings) return new DB(c.bindings.DB);
+		throw new EdgeConfigError("DB");
+	});
 }
 
 /**
@@ -64,16 +82,21 @@ export function db() {
 export function unstable_orm<
 	Schema extends Record<string, unknown> = Record<string, never>,
 >(schema: Schema, logger?: Logger) {
-	let c = internal_store("db");
-	if ("DB" in c.bindings) return drizzle(c.bindings.DB, { schema, logger });
-	throw new EdgeConfigError("DB");
+	return remember(SYMBOLS.orm, () => {
+		let c = internal_store("db");
+		if ("DB" in c.bindings) return drizzle(c.bindings.DB, { schema, logger });
+		throw new EdgeConfigError("DB");
+	});
 }
 
 /**
  * Access the environment variables in your Edge-first application.
  */
 export function env() {
-	return new Env();
+	return remember(SYMBOLS.env, () => {
+		let c = internal_store("env");
+		return new Env(c.bindings);
+	});
 }
 
 /**
@@ -81,9 +104,11 @@ export function env() {
  * application.
  */
 export function kv() {
-	let c = internal_store("kv");
-	if ("KV" in c.bindings) return new KV(c.bindings.KV);
-	throw new EdgeConfigError("KV");
+	return remember(SYMBOLS.kv, () => {
+		let c = internal_store("kv");
+		if ("KV" in c.bindings) return new KV(c.bindings.KV);
+		throw new EdgeConfigError("KV");
+	});
 }
 
 /**
@@ -116,9 +141,11 @@ export function headers() {
  * Run machine learning models, such as LLMs in your Edge-first application.
  */
 export function unstable_ai() {
-	let c = internal_store("ai");
-	if ("AI" in c.bindings) return new AI(c.bindings.AI);
-	throw new EdgeConfigError("AI");
+	return remember(SYMBOLS.ai, () => {
+		let c = internal_store("ai");
+		if ("AI" in c.bindings) return new AI(c.bindings.AI);
+		throw new EdgeConfigError("AI");
+	});
 }
 
 /**
@@ -134,9 +161,11 @@ export function unstable_geo() {
  * Enqueue for processing later any kind of payload of data.
  */
 export function unstable_queue() {
-	let c = internal_store("queue");
-	if ("QUEUE" in c.bindings) return new Queue(c.bindings.QUEUE, c.waitUntil);
-	throw new EdgeConfigError("Queue");
+	return remember(SYMBOLS.queue, () => {
+		let c = internal_store("queue");
+		if ("QUEUE" in c.bindings) return new Queue(c.bindings.QUEUE, c.waitUntil);
+		throw new EdgeConfigError("Queue");
+	});
 }
 
 export {
