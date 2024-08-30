@@ -79,7 +79,7 @@ export function db() {
  * @param schema The Drizzle schema of your database
  * @param logger An optional custom logger
  */
-export function unstable_orm<
+export function orm<
 	Schema extends Record<string, unknown> = Record<string, never>,
 >(schema: Schema, logger?: Logger) {
 	return remember(SYMBOLS.orm, () => {
