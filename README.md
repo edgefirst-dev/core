@@ -54,6 +54,9 @@ The `env` function gives you access to the environment variables in a type-safe 
 import { env } from "@edgefirst-dev/core";
 ```
 
+> [!WARNING]
+> This function is memoized so the next time you call it, it will return the same instance of the env object.
+
 #### Env#fetch
 
 The `env().fetch` method is used to get a value from the environment variables.
@@ -77,6 +80,9 @@ The `kv` function gives you access to a Key-Value store powered by Cloudflare Wo
 ```ts
 import { kv } from "@edgefirst-dev/core";
 ```
+
+> [!WARNING]
+> This function is memoized so the next time you call it, it will return the same instance of the KV object.
 
 #### KV#keys
 
@@ -158,6 +164,9 @@ The `fs` function gives you an instance of [@mjackson/file-storage](https://www.
 import { fs } from "@edgefirst-dev/core";
 ```
 
+> [!WARNING]
+> This function is memoized so the next time you call it, it will return the same instance of the FS object.
+
 > [!TIP]
 > Check [@mjackson's File Storage documentation](https://github.com/mjackson/file-storage) to know what's possible with this library.
 > The `FS#keys` and `FS#serve` methods are not available in the original library, they are custom methods added by this library and therefore are documented here.
@@ -197,6 +206,9 @@ The `db` function gives you access to a database object powered by Cloudflare D1
 import { db as edgeDb } from "@edgefirst-dev/core";
 ```
 
+> [!WARNING]
+> This function is memoized so the next time you call it, it will return the same instance of the database.
+
 This object is compatible with D1 interface so it can be used with Drizzle ORM or any other D1 compatible library.
 
 ```ts
@@ -218,6 +230,31 @@ let database = db().binding;
 > [!TIP]
 > The database can be used to access the D1 database directly in case you need to integrate with it.
 
+### orm(schema, logger?)
+
+The `orm` function gives you access to a database object powered by Cloudflare D1 and Drizzle ORM.
+
+```ts
+import { orm } from "@edgefirst-dev/core";
+```
+
+> [!WARN]
+> This function is memoized, so the next time you call it, it will return the same instance of the Drizzle ORM, the memoization is not taking into account the arguments of the functions.
+
+You will need to pass the schema object of your database as the first argument.
+
+```ts
+import * as schema from "~/db/schema";
+
+let db = orm(schema);
+```
+
+And optionally a logger object as the second argument.
+
+```ts
+let db = orm(schema, logger);
+```
+
 ### cache()
 
 The `cache` function gives you access to a cache object powered by Cloudflare Worker KV.
@@ -227,6 +264,9 @@ import { cache } from "@edgefirst-dev/core";
 ```
 
 Every cached key will be prefixed by `cache:` to avoid conflicts with other keys.
+
+> [!WARNING]
+> This function is memoized so the next time you call it, it will return the same instance of the cache object.
 
 #### Cache#fetch
 
@@ -310,6 +350,9 @@ The `unstable_ai` object gives you access to the AI services powered by Cloudfla
 ```ts
 import { unstable_ai } from "@edgefirst-dev/core";
 ```
+
+> [!WARNING]
+> This function is memoized so the next time you call it, it will return the same instance of the AI object.
 
 > [!IMPORTANT]
 > This marked as unstable because it's still in development and the API might change.
@@ -424,6 +467,9 @@ The `unstable_queue` object gives you access to a Queue publisher powered by Clo
 ```ts
 import { unstable_queue } from "@edgefirst-dev/core";
 ```
+
+> [!WARNING]
+> This function is memoized so the next time you call it, it will return the same instance of the queue object.
 
 > [!IMPORTANT]
 > This marked as unstable because it's still in development and the API might change.
