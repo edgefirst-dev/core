@@ -1,8 +1,8 @@
 {
 	/* Change to `@total-typescript/tsconfig/tsc/dom/library` for DOM usage */
 	"extends": "@total-typescript/tsconfig/tsc/no-dom/library",
-	"include": ["src/**/*.ts"],
-	"exclude": ["src/**/*.test.ts"],
+	"include": ["src/**/*"],
+	"exclude": ["src/**/*.test.*"],
 	"compilerOptions": {
 		"outDir": "./build",
 		"types": ["@cloudflare/workers-types"]
