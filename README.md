@@ -27,12 +27,19 @@ app.use(staticAssets());
 app.use(edgeRuntime()); //Add it before your Remix handler
 
 app.use(async (c, next) => {
-  let handler = remix({ build: await importServerBuild(), mode: "production" });
+  let serverBuild = await importServerBuild();
+  let handler = remix({
+    build: serverBuild,
+    mode: import.meta.env.PROD ? "production" : "development",
+    getLoadContext(c) {
+      return { cloudflare: { env: c.env, ctx: c.executionCtx } };
+    },
+  });
   return handler(c, next);
 });
 
 function importServerBuild(): Promise<ServerBuild> {
-  if (process.env.NODE_ENV === "development" || import.meta.env.DEV) {
+  if (process.env.NODE_ENV === "development") {
     // @ts-expect-error - TS doesn't know about virtual:remix/server-build
     return import("virtual:remix/server-build");
   }

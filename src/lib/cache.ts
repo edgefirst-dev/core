@@ -2,8 +2,17 @@ import type { KVNamespace } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
 import type { WaitUntilFunction } from "./types.js";
 
+/**
+ * @group Cache
+ */
 export namespace Cache {
+	/**
+	 * A string representing a key in the cache.
+	 */
 	export type Key = string;
+	/**
+	 * A number representing the time-to-live for the cache.
+	 */
 	export type TTL = number;
 
 	export namespace Fetch {
@@ -24,6 +33,7 @@ export namespace Cache {
 
 /**
  * Cache functions result in your Edge-first applications.
+ * @group Cache
  */
 export class Cache {
 	protected prefix = "cache";
@@ -34,16 +44,40 @@ export class Cache {
 		protected waitUntil: WaitUntilFunction,
 	) {}
 
+	/**
+	 * A read-only property that gives you the `KVNamespace` used by the Cache object.
+	 *
+	 * The namespace can be used to access the KVNamespace directly in case you need to integrate with it.
+	 * @example
+	 * let namespace = cache().binding;
+	 */
 	get binding() {
 		return this.kv;
 	}
 
 	/**
-	 * Fetches a value from the cache, or calls the given function if the cache
-	 * is not found. The result of the function is stored in the cache.
+	 * The `cache().fetch` method is used to get a value from the cache or
+	 * calculate it if it's not there.
+	 *
+	 * The function expects the key, the TTL, and a function that will be called
+	 * to calculate the value if it's not in the cache.
 	 * @param key The cache key to use, always prefixed by `cache:`
 	 * @param ttl The time-to-live for the cache, in seconds
 	 * @param callback The function to call if the cache is not found
+	 *
+	 * @example
+	 * let ONE_HOUR_IN_SECONDS = 3600;
+	 *
+	 * let value = await cache().fetch("key", ONE_HOUR_IN_SECONDS, async () => {
+	 *   // do something expensive and return the value
+	 * });
+	 *
+	 * @description The TTL is optional, it defaults to 60 seconds if not provided.
+	 *
+	 * @example
+	 * await cache().fetch("another-key", async () => {
+	 *   // The TTL is optional, it defaults to 60 seconds
+	 * });
 	 */
 	async fetch<T extends Jsonifiable>(
 		key: Cache.Key,
@@ -76,8 +110,11 @@ export class Cache {
 	}
 
 	/**
-	 * Delete a specific cache key.
+	 * The `cache().purge` method is used to remove a key from the cache.
 	 * @param key The cache key to delete, always prefixed by `cache:`
+	 *
+	 * @example
+	 * cache().purge("key");
 	 */
 	purge(key: Cache.Key) {
 		this.waitUntil(this.kv.delete(this.key(key)));

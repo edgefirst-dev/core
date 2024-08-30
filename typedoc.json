@@ -2,9 +2,14 @@
 	"$schema": "https://typedoc.org/schema.json",
 	"includeVersion": true,
 	"entryPoints": ["./src/index.ts", "./src/hono.ts"],
-	"out": "docs",
-	"json": "docs/index.json",
+	"projectDocuments": ["docs/**/*.md"],
+	"out": "pages",
+	"json": "pages/index.json",
 	"cleanOutputDir": true,
 	"plugin": ["typedoc-plugin-mdn-links"],
-	"categorizeByGroup": false
+	"categorizeByGroup": true,
+	"excludeInternal": true,
+	"navigationLinks": {
+		"GitHub": "https://github.com/edgefirst-dev/core"
+	}
 }

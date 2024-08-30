@@ -32,6 +32,7 @@ const SYMBOLS = {
 	queue: Symbol(),
 };
 
+/** @internal */
 export function internal_store(key: string) {
 	let store = storage.getStore();
 	if (!store) throw new EdgeContextError(key);
@@ -51,7 +52,17 @@ export function fs() {
 }
 
 /**
- * Cache functions result in your Edge-first applications.
+ * The `cache` function gives you access to a cache object powered by
+ * Cloudflare Worker KV.
+ *
+ * Every cached key will be prefixed by `cache:` to avoid conflicts with other
+ * keys.
+ *
+ * This function is memoized so the next time you call it, it will return the
+ * same instance of the cache object.
+ * @group Cache
+ * @example
+ * import { cache } from "@edgefirst-dev/core";
  */
 export function cache() {
 	return remember(SYMBOLS.cache, () => {
@@ -78,6 +89,10 @@ export function db() {
  * to your D1 database.
  * @param schema The Drizzle schema of your database
  * @param logger An optional custom logger
+ * @example
+ * import { orm } from "@edgefirst-dev/core";
+ * import * as schema from "~/db/schema";
+ * let users = await orm(schema).query.users.findMany()
  */
 export function orm<
 	Schema extends Record<string, unknown> = Record<string, never>,
@@ -90,7 +105,9 @@ export function orm<
 }
 
 /**
- * Access the environment variables in your Edge-first application.
+ * The `env` function gives you access to the environment variables in a
+ * type-safe way.
+ * @warn
  */
 export function env() {
 	return remember(SYMBOLS.env, () => {
