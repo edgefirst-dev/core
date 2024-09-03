@@ -1,5 +1,6 @@
 import type { R2Bucket } from "@cloudflare/workers-types";
 import type { FileStorage } from "@mjackson/file-storage";
+import type { FileUploadHandler } from "@mjackson/form-data-parser";
 
 export namespace FS {
 	export namespace Keys {
@@ -38,6 +39,11 @@ export namespace FS {
 			 */
 			fallback?: BodyInit | null;
 		};
+	}
+
+	export namespace UploadHandler {
+		export type AllowedFieldNames = string[];
+		export type GetKeyFunction = (name: string) => string;
 	}
 }
 
@@ -123,5 +129,36 @@ export class FS implements FileStorage {
 		} catch {}
 
 		return new Response(await object.arrayBuffer(), { headers });
+	}
+
+	/**
+	 * Create a new FileUploadHandler function that will automatically upload
+	 * files to the File Storage.
+	 *
+	 * The handle will only upload files if they match a list of valid input
+	 * field name. The key used to store the file can be customized with a
+	 * `getKey` function.
+	 * @param allowedFieldNames The form field names allowed to upload files.
+	 * @param getKey A function that returns the key usd to store the file in the file system.
+	 * @returns A file upload handler function that can be used with the parseFormData.
+	 */
+	uploadHandler(
+		allowedFieldNames: FS.UploadHandler.AllowedFieldNames,
+		getKey: FS.UploadHandler.GetKeyFunction,
+	): FileUploadHandler {
+		return async (fileUpload) => {
+			if (!fileUpload.fieldName) return;
+			if (!allowedFieldNames.includes(fileUpload.fieldName)) return;
+
+			let key = getKey ? getKey(fileUpload.name) : crypto.randomUUID();
+
+			let file = new File([await fileUpload.arrayBuffer()], key, {
+				type: fileUpload.type,
+			});
+
+			await this.set(key, file);
+
+			return file;
+		};
 	}
 }

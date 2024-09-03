@@ -38,6 +38,7 @@
 	"dependencies": {
 		"@cloudflare/workers-types": "^4.20240821.1",
 		"@mjackson/file-storage": "^0.2.0",
+		"@mjackson/form-data-parser": "^0.2.0",
 		"@mjackson/headers": "^0.7.2",
 		"@remix-run/server-runtime": "^2.11.2",
 		"drizzle-orm": "^0.33.0",

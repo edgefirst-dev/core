@@ -194,6 +194,27 @@ The `fs().serve` method is used to get a response object that can be sent to the
 let response = await fs().serve("key");
 ```
 
+#### FS#uploadHandler
+
+The `fs().uploadHandler` method is used to create a handler that can be used to upload files to the store.
+
+```ts
+import { parseFormData } from "@mjackson/form-data-parser";
+
+let formData = await parseFormData(request, fs().uploadHandler(["avatar"]));
+```
+
+The `uploadHandler` method expects an array of keys that will be used to store the files. Optionally, a function can be provided to get the key from the file.
+
+```ts
+let formData = await parseFormData(
+  request,
+  fs().uploadHandler(["avatar"], (file) => {
+    return `avatar:${file.name}`;
+  })
+);
+```
+
 #### FS#binding
 
 A read-only property that gives you the `R2Bucket` used by the FS object.
