@@ -549,6 +549,44 @@ interface Geo {
 > [!TIP]
 > The `Iso3166Alpha2Code` and `ContinentCode` are union types provided by Cloudflare Worker types package.
 
+### experimental_rateLimit
+
+The `experimental_rateLimit` object gives you access to the rate limiting object powered by Cloudflare Worker KV.
+
+```ts
+import { experimental_rateLimit } from "@edgefirst-dev/core";
+```
+
+> [!WARNING]
+> This function is not memoized so the next time you call it, it will return a new instance of the rate limit object.
+
+> [!IMPORTANT]
+> This marked as experimental because it's still in development and the API might change.
+
+#### RateLimit#limit
+
+The `experimental_rateLimit().limit` method is used to limit the number of requests per key.
+
+```ts
+await experimental_rateLimit({ limit, window }).limit({ key });
+```
+
+#### RateLimit#reset
+
+The `experimental_rateLimit().reset` method is used to reset the rate limit for a key.
+
+```ts
+await experimental_rateLimit().reset({ key });
+```
+
+#### RateLimit#writeHttpMetadata
+
+The `experimental_rateLimit().writeHttpMetadata` method is used to write the rate limit metadata to the response headers.
+
+```ts
+await experimental_rateLimit().writeHttpMetadata({ key }, headers);
+```
+
 ### Errors
 
 The library may throw some errors, they can all be imported so you can handle them.

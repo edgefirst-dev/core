@@ -1,3 +1,4 @@
+import { WorkerKVRateLimit } from "@edgefirst-dev/worker-kv-rate-limit";
 import Headers from "@mjackson/headers";
 import type { Logger } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
@@ -19,7 +20,7 @@ import { remember } from "./lib/remember.js";
 import { storage } from "./lib/storage.js";
 import type { Bindings } from "./lib/types.js";
 
-export type { AI, Cache, DB, FS, KV, Queue, Env };
+export type { AI, Cache, DB, Env, FS, Geo, KV, Queue, WorkerKVRateLimit };
 
 const SYMBOLS = {
 	ai: Symbol(),
@@ -183,6 +184,45 @@ export function unstable_queue() {
 		if ("QUEUE" in c.bindings) return new Queue(c.bindings.QUEUE, c.waitUntil);
 		throw new EdgeConfigError("Queue");
 	});
+}
+
+/**
+ * Get access to a rate limiter for your Edge-first application.
+ *
+ * The RateLimit object gives you an `limit` method you can call with any key
+ * to identify the thing you want to rate limit.
+ *
+ * The default limit is set to 10, the default period is set to 60s, this means
+ * by default any call to `limit` will allow 10 calls in a limit of 60s
+ *
+ * There's also a `reset` method that will delete the rate limit for a given
+ * key.
+ *
+ * The `writeHttpMetadata` method will fill a Headers object with the necessary
+ * headers to inform the client about the rate limit. If a Headers object is not
+ * provided, a new one will be created and returned.
+ *
+ * @example
+ * import { experimental_rateLimit } from "@edgefirst-dev/core";
+ * @example
+ * let rateLimit = experimental_rateLimit();
+ * @example
+ * let rateLimit = experimental_rateLimit({ limit: 10, period: 60 });
+ * @example
+ * let result = await rateLimit.limit({ key });
+ * if (result.success) return json(data);
+ * return json(error, { status: 429 });
+ * @example
+ * let headers = await rateLimit.writeHttpMetadata(key);
+ * if (!result.success) return json(error, { status: 429, headers });
+ * return json(data, { headers });
+ * @example
+ * await rateLimit.reset(key);
+ */
+export function experimental_rateLimit(options?: WorkerKVRateLimit.Options) {
+	let c = internal_store("rateLimit");
+	if ("KV" in c.bindings) return new WorkerKVRateLimit(c.bindings.KV, options);
+	throw new EdgeConfigError("RateLimit");
 }
 
 export {
