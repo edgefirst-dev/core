@@ -8,7 +8,7 @@ The core of the Edge-first Stack.
 bun add @edgefirst-dev/core
 ```
 
-## Usage
+## Usage with Remix + Hono
 
 In your Hono server, add the `edgeRuntime` middleware
 
