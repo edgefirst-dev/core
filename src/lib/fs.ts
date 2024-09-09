@@ -1,5 +1,4 @@
-import type { R2Bucket } from "@cloudflare/workers-types";
-import type { FileStorage } from "@mjackson/file-storage";
+import { R2FileStorage } from "@edgefirst-dev/r2-file-storage";
 import type { FileUploadHandler } from "@mjackson/form-data-parser";
 
 export namespace FS {
@@ -51,9 +50,7 @@ export namespace FS {
  * Upload, store and serve images, videos, music, documents and other
  * unstructured data in your Edge-first application.
  */
-export class FS implements FileStorage {
-	constructor(protected r2: R2Bucket) {}
-
+export class FS extends R2FileStorage {
 	get binding() {
 		return this.r2;
 	}
@@ -66,42 +63,6 @@ export class FS implements FileStorage {
 		let keys = result.objects.map((object) => object.key);
 		if (result.truncated) return { keys, done: false, cursor: result.cursor };
 		return { keys, done: true, cursor: null };
-	}
-
-	/**
-	 * Returns `true` if a file with the given key exists, `false` otherwise.
-	 */
-	async has(key: string) {
-		let object = await this.r2.get(key);
-		return object !== null;
-	}
-
-	/**
-	 * Puts a file in storage at the given key.
-	 */
-	async set(key: string, file: File) {
-		await this.r2.put(key, await file.arrayBuffer());
-	}
-
-	/**
-	 * Returns the file with the given key, or `null` if no such key exists.
-	 */
-	async get(key: string) {
-		let object = await this.r2.get(key);
-		if (!object) return null;
-
-		let buffer = await object.arrayBuffer();
-		return new File([buffer], key, {
-			type: object.httpMetadata?.contentType,
-			lastModified: object.uploaded.getTime(),
-		});
-	}
-
-	/**
-	 * Removes the file with the given key from storage.
-	 */
-	async remove(key: string) {
-		await this.r2.delete(key);
 	}
 
 	/**
