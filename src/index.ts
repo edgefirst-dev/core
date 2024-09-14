@@ -17,10 +17,23 @@ import { Geo } from "./lib/geo.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
 import { remember } from "./lib/remember.js";
+import { type Session, WorkerKVSessionStorage } from "./lib/session.js";
 import { storage } from "./lib/storage.js";
-import type { Bindings } from "./lib/types.js";
+import type { Bindings, SessionData, SessionFlashData } from "./lib/types.js";
 
-export type { AI, Cache, DB, Env, FS, Geo, KV, Queue, WorkerKVRateLimit };
+export type {
+	AI,
+	Cache,
+	DB,
+	Env,
+	FS,
+	Geo,
+	KV,
+	Queue,
+	WorkerKVRateLimit,
+	WorkerKVSessionStorage,
+	Session,
+};
 
 const SYMBOLS = {
 	ai: Symbol(),
@@ -31,6 +44,7 @@ const SYMBOLS = {
 	kv: Symbol(),
 	orm: Symbol(),
 	queue: Symbol(),
+	session: Symbol(),
 };
 
 /** @internal */
@@ -222,7 +236,19 @@ export function unstable_queue() {
 export function experimental_rateLimit(options?: WorkerKVRateLimit.Options) {
 	let c = internal_store("rateLimit");
 	if ("KV" in c.bindings) return new WorkerKVRateLimit(c.bindings.KV, options);
-	throw new EdgeConfigError("RateLimit");
+	throw new EdgeConfigError("rateLimit");
+}
+
+export function experimental_sessionStorage() {
+	return remember(SYMBOLS.session, () => {
+		let c = internal_store("session");
+		if ("KV" in c.bindings) {
+			return new WorkerKVSessionStorage<SessionData, SessionFlashData>(
+				c.bindings.KV,
+			);
+		}
+		throw new EdgeConfigError("sessionStorage");
+	});
 }
 
 export {
@@ -232,4 +258,4 @@ export {
 	EdgeRequestGeoError,
 };
 
-export type { Bindings };
+export type { Bindings, SessionData, SessionFlashData };
