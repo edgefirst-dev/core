@@ -125,7 +125,7 @@ export class KV {
 	): Promise<KV.Get.Output<Value, Meta>> {
 		let result = await this.kv.getWithMetadata<Value>(key, "json");
 		let meta = (result.metadata ?? null) as Meta | null;
-		return { data: result.value, meta };
+		return { data: result.value ?? null, meta };
 	}
 
 	/**
@@ -151,9 +151,8 @@ export class KV {
 	 * @returns Whether the key exists or not.
 	 */
 	async has(key: KV.Has.Key): Promise<KV.Has.Output> {
-		let result = await this.get(key);
-		if (result.data === null) return false;
-		return true;
+		let result = await this.kv.get(key);
+		return Boolean(result);
 	}
 
 	/**
