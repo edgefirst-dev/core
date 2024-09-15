@@ -37,7 +37,9 @@ describe(Cache.name, () => {
 	});
 
 	test("#fetch (cached)", async () => {
-		let kv = new MockKVNamespace([["cache:key", JSON.stringify("result")]]);
+		let kv = new MockKVNamespace([
+			["cache:key", { value: JSON.stringify("result") }],
+		]);
 		let waitUntil = waitUntilFactory();
 		let cacheFn = mock().mockImplementation(() => "result");
 
