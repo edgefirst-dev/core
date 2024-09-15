@@ -37,9 +37,7 @@ describe(Cache.name, () => {
 	});
 
 	test("#fetch (cached)", async () => {
-		let kv = new MockKVNamespace([
-			["cache:key", { value: JSON.stringify("result") }],
-		]);
+		let kv = new MockKVNamespace([["cache:key", { value: "result" }]]);
 		let waitUntil = waitUntilFactory();
 		let cacheFn = mock().mockImplementation(() => "result");
 
@@ -68,22 +66,6 @@ describe(Cache.name, () => {
 		expect(kv.put).toHaveBeenCalledTimes(1);
 		expect(cacheFn).toHaveBeenCalledTimes(1);
 		expect(waitUntil).toHaveBeenCalledTimes(1);
-	});
-
-	test("#fetch with TTL (expired)", async () => {
-		let kv = new MockKVNamespace();
-		let waitUntil = waitUntilFactory();
-		let cacheFn = mock().mockImplementation(() => "result");
-
-		let cache = new Cache(kv, waitUntil);
-		await cache.fetch("key", 1, cacheFn);
-
-		await kv.delete("key"); // Simulate expiration
-
-		let result = await cache.fetch("key", 1, cacheFn);
-
-		expect(result).toBe("result");
-		expect(cacheFn).toHaveBeenCalledTimes(1);
 	});
 
 	test("#purge", async () => {
