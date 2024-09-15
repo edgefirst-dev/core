@@ -1,6 +1,7 @@
 import type {
 	ContinentCode,
 	Iso3166Alpha2Code,
+	Request,
 } from "@cloudflare/workers-types";
 import { EdgeRequestGeoError } from "./errors.js";
 
@@ -10,53 +11,53 @@ export class Geo {
 	}
 
 	get country() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.country as Iso3166Alpha2Code | "T1";
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.country as Iso3166Alpha2Code | "T1";
 	}
 
 	get region() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.region as string;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.region as string;
 	}
 
 	get city() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.city as string;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.city as string;
 	}
 
 	get postalCode() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.postalCode as string;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.postalCode as string;
 	}
 
 	get latitude() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.latitude as string;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.latitude as string;
 	}
 
 	get longitude() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.longitude as string;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.longitude as string;
 	}
 
 	get timezone() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.timezone as string;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.timezone as string;
 	}
 
 	get metroCode() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.metroCode as string;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.metroCode as string;
 	}
 
 	get continent() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.continent as ContinentCode;
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.continent as ContinentCode;
 	}
 
 	get isEurope() {
-		if (!this.request.cf) throw new EdgeRequestGeoError();
-		return this.request.cf.isEUCountry === "1";
+		// biome-ignore lint/style/noNonNullAssertion: We checked for cf before
+		return this.request.cf!.isEUCountry === "1";
 	}
 
 	toJSON() {
