@@ -51,7 +51,7 @@ export namespace FS {
  * unstructured data in your Edge-first application.
  */
 export class FS extends R2FileStorage {
-	get binding() {
+	get binding(): R2Bucket {
 		return this.r2;
 	}
 
