@@ -20,3 +20,4 @@ export interface Bindings {
 
 export interface SessionData extends Session.Data {}
 export interface SessionFlashData extends Session.Data {}
+export interface DatabaseSchema extends Record<string, unknown> {}
