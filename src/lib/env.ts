@@ -5,7 +5,9 @@ import type { Bindings } from "./types.js";
  * Access environment variables in your Edge-first application.
  */
 export class Env {
-	constructor(protected bindings: Bindings) {}
+	constructor(protected bindings: Bindings) {
+		if (!bindings) throw new EdgeContextError("env().fetch");
+	}
 
 	/**
 	 * Retrieve a value from the environment variables.
@@ -19,8 +21,6 @@ export class Env {
 		key: Key,
 		fallback?: Bindings[Key],
 	): Bindings[Key] {
-		if (!this.bindings) throw new EdgeContextError("env().fetch");
-
 		let data = this.bindings[key];
 		if (data) return data;
 
