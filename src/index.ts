@@ -15,7 +15,12 @@ import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
 import { type Session, WorkerKVSessionStorage } from "./lib/session.js";
 import { type EdgeFirstContext, storage } from "./lib/storage.js";
-import type { Bindings, SessionData, SessionFlashData } from "./lib/types.js";
+import type {
+	Bindings,
+	SessionData,
+	SessionFlashData,
+	DatabaseSchema,
+} from "./lib/types.js";
 
 export type {
 	AI,
@@ -192,4 +197,4 @@ export {
 	EdgeRequestGeoError,
 };
 
-export type { Bindings, SessionData, SessionFlashData };
+export type { Bindings, SessionData, SessionFlashData, DatabaseSchema };
