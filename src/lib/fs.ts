@@ -78,10 +78,10 @@ export class FS extends R2FileStorage {
 		let object = await this.r2.get(key);
 
 		if (!object) {
-			return new Response(fallback ?? null, { status: 404, ...init });
+			return new Response(fallback ?? null, { ...init, status: 404 });
 		}
 
-		let headers = new Headers();
+		let headers = new Headers(init?.headers);
 
 		// This may throw, we don't want to break the response
 		try {
@@ -105,7 +105,7 @@ export class FS extends R2FileStorage {
 	 */
 	uploadHandler(
 		allowedFieldNames: FS.UploadHandler.AllowedFieldNames,
-		getKey: FS.UploadHandler.GetKeyFunction,
+		getKey?: FS.UploadHandler.GetKeyFunction,
 	): FileUploadHandler {
 		return async (fileUpload) => {
 			if (!fileUpload.fieldName) return;

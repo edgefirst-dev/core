@@ -37,7 +37,6 @@ export namespace Cache {
  */
 export class Cache {
 	protected prefix = "cache";
-	protected separator = ":";
 
 	constructor(
 		protected kv: KVNamespace,
@@ -93,10 +92,10 @@ export class Cache {
 		ttlOrCb: Cache.TTL | Cache.Fetch.CallbackFunction<T>,
 		callback?: Cache.Fetch.CallbackFunction<T>,
 	): Promise<T> {
-		let cacheKey = this.key(key);
+		let cacheKey = this.getPrefixedKey(key);
 
-		let cached = await this.kv.get<T>(cacheKey, "json");
-		if (cached) return cached;
+		let cached = await this.kv.get(cacheKey, "text");
+		if (cached) return JSON.parse(cached) as T;
 
 		let result = await this.cb(ttlOrCb, callback)();
 
@@ -117,11 +116,11 @@ export class Cache {
 	 * cache().purge("key");
 	 */
 	purge(key: Cache.Key) {
-		this.waitUntil(this.kv.delete(this.key(key)));
+		this.waitUntil(this.kv.delete(this.getPrefixedKey(key)));
 	}
 
-	protected key(key: Cache.Key): string {
-		return [this.prefix, key].join(this.separator);
+	protected getPrefixedKey(key: Cache.Key): string {
+		return `${this.prefix}:${key}`;
 	}
 
 	private ttl<T>(ttlOrCb: Cache.TTL | Cache.Fetch.CallbackFunction<T>): number {

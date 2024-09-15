@@ -1,6 +1,6 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 
-import { KVNamespace } from "@cloudflare/workers-types";
+import { MockKVNamespace } from "../mocks/cf.js";
 import { Session, WorkerKVSessionStorage } from "./session.js";
 
 describe(Session.name, () => {
@@ -83,44 +83,41 @@ describe(Session.name, () => {
 });
 
 describe(WorkerKVSessionStorage.name, () => {
-	let get = mock().mockImplementation(async () => {
-		return {};
-	});
-	let put = mock().mockImplementation(async () => void 0);
-	let del = mock().mockImplementationOnce(async () => void 0);
-
-	let kv = { get, put, delete: del } as unknown as KVNamespace;
-
 	test("#constructor", () => {
+		let kv = new MockKVNamespace();
 		let storage = new WorkerKVSessionStorage(kv);
 		expect(storage).toBeInstanceOf(WorkerKVSessionStorage);
 	});
 
 	test("#read", async () => {
+		let kv = new MockKVNamespace();
 		let storage = new WorkerKVSessionStorage(kv);
 		let session = await storage.read();
 		expect(session).toBeInstanceOf(Session);
-		expect(get).toHaveBeenCalledTimes(1);
+		expect(kv.get).toHaveBeenCalledTimes(1);
 	});
 
 	test("#read with id", async () => {
+		let kv = new MockKVNamespace();
 		let storage = new WorkerKVSessionStorage(kv);
 		let session = await storage.read(crypto.randomUUID());
 		expect(session).toBeInstanceOf(Session);
-		expect(get).toHaveBeenCalledTimes(2);
+		expect(kv.get).toHaveBeenCalledTimes(1);
 	});
 
 	test("#save", async () => {
+		let kv = new MockKVNamespace();
 		let storage = new WorkerKVSessionStorage(kv);
 		let session = new Session(crypto.randomUUID(), {});
 		await storage.save(session);
-		expect(put).toHaveBeenCalledTimes(1);
+		expect(kv.put).toHaveBeenCalledTimes(1);
 	});
 
 	test("#destroy", async () => {
+		let kv = new MockKVNamespace();
 		let storage = new WorkerKVSessionStorage(kv);
 		let session = new Session(crypto.randomUUID(), {});
 		await storage.destroy(session);
-		expect(del).toHaveBeenCalledTimes(1);
+		expect(kv.delete).toHaveBeenCalledTimes(1);
 	});
 });
