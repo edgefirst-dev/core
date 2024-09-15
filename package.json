@@ -1,6 +1,6 @@
 {
 	"name": "@edgefirst-dev/core",
-	"version": "0.0.19",
+	"version": "0.0.20",
 	"description": "The core of the Edge-first Stack",
 	"license": "MIT",
 	"funding": [
