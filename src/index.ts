@@ -17,9 +17,9 @@ import { type Session, WorkerKVSessionStorage } from "./lib/session.js";
 import { type EdgeFirstContext, storage } from "./lib/storage.js";
 import type {
 	Bindings,
+	DatabaseSchema,
 	SessionData,
 	SessionFlashData,
-	DatabaseSchema,
 } from "./lib/types.js";
 
 export type {
