@@ -50,9 +50,9 @@ describe(Session.name, () => {
 		expect(session.get("name")).toEqual(name);
 	});
 
-	test("#del", () => {
+	test("#unset", () => {
 		let session = new Session<{ name: string }>(id, { name });
-		session.del("name");
+		session.unset("name");
 		expect(session.data.name).toBeUndefined();
 	});
 

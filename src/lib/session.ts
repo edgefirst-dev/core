@@ -114,7 +114,7 @@ export class Session<
 	 * Delete a value from the session data.
 	 * @param key The key of the data to delete
 	 */
-	del<K extends keyof Data>(key: K) {
+	unset<K extends keyof Data>(key: K) {
 		this.#data.delete(key);
 		this.#isDirty = true;
 	}
