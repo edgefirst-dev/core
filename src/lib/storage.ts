@@ -20,22 +20,22 @@ import type {
 } from "./types.js";
 
 export interface EdgeFirstContext {
-	ai: AI;
-	db: DB;
-	fs: FS;
-	kv: KV;
+	ai?: AI;
+	db?: DB;
+	fs?: FS;
+	kv?: KV;
 	env: Env;
 	geo: Geo;
-	orm: DrizzleD1Database<DatabaseSchema>;
-	cache: Cache;
-	queue: Queue;
+	orm?: DrizzleD1Database<DatabaseSchema>;
+	cache?: Cache;
+	queue?: Queue;
 	signal: AbortSignal;
 	headers: SuperHeaders;
 	request: Request;
-	bindings: Bindings;
-	rateLimit: WorkerKVRateLimit;
+	bindings?: Bindings;
+	rateLimit?: WorkerKVRateLimit;
 	waitUntil: WaitUntilFunction;
-	sessionStorage: WorkerKVSessionStorage<SessionData, SessionFlashData>;
+	sessionStorage?: WorkerKVSessionStorage<SessionData, SessionFlashData>;
 }
 
 export const storage = new AsyncLocalStorage<EdgeFirstContext>();

@@ -36,11 +36,14 @@ export type {
 	Session,
 };
 
-/** @internal */
-function internal_store(key: keyof EdgeFirstContext) {
+function internal_store<K extends keyof EdgeFirstContext>(
+	key: K,
+): NonNullable<EdgeFirstContext[K]> {
 	let store = storage.getStore();
 	if (!store) throw new EdgeContextError(key);
-	return store;
+	let value = store[key];
+	if (!value) throw new EdgeContextError(key);
+	return value;
 }
 
 /**
@@ -48,7 +51,7 @@ function internal_store(key: keyof EdgeFirstContext) {
  * unstructured data in your Edge-first application.
  */
 export function fs() {
-	return internal_store("fs").fs;
+	return internal_store("fs");
 }
 
 /**
@@ -62,7 +65,7 @@ export function fs() {
  * same instance of the cache object.
  */
 export function cache() {
-	return internal_store("cache").cache;
+	return internal_store("cache");
 }
 
 /**
@@ -70,7 +73,7 @@ export function cache() {
  * relational data.
  */
 export function db() {
-	return internal_store("db").db;
+	return internal_store("db");
 }
 
 /**
@@ -78,7 +81,7 @@ export function db() {
  * to your D1 database.
  */
 export function orm() {
-	return internal_store("orm").orm;
+	return internal_store("orm");
 }
 
 /**
@@ -86,7 +89,7 @@ export function orm() {
  * type-safe way.
  */
 export function env() {
-	return internal_store("env").env;
+	return internal_store("env");
 }
 
 /**
@@ -94,14 +97,14 @@ export function env() {
  * application.
  */
 export function kv() {
-	return internal_store("kv").kv;
+	return internal_store("kv");
 }
 
 /**
  * Access the request object in your Edge-first application.
  */
 export function request() {
-	return internal_store("request").request;
+	return internal_store("request");
 }
 
 /**
@@ -109,36 +112,36 @@ export function request() {
  * application.
  */
 export function signal() {
-	return internal_store("signal").signal;
+	return internal_store("signal");
 }
 
 /**
  * Access the headers of the request in your Edge-first application.
  */
 export function headers() {
-	return internal_store("headers").headers;
+	return internal_store("headers");
 }
 
 /**
  * Run machine learning models, such as LLMs in your Edge-first application.
  */
-export function unstable_ai() {
-	return internal_store("ai").ai;
+export function ai() {
+	return internal_store("ai");
 }
 
 /**
  * Access the geolocation information of the request in your Edge-first
  * application.
  */
-export function unstable_geo() {
-	return internal_store("geo").geo;
+export function geo() {
+	return internal_store("geo");
 }
 
 /**
  * Enqueue for processing later any kind of payload of data.
  */
-export function unstable_queue() {
-	return internal_store("queue").queue;
+export function queue() {
+	return internal_store("queue");
 }
 
 /**
@@ -158,13 +161,13 @@ export function unstable_queue() {
  * provided, a new one will be created and returned.
  *
  * @example
- * import { experimental_rateLimit } from "@edgefirst-dev/core";
+ * import { rateLimit } from "@edgefirst-dev/core";
  *
  * @example
- * let rateLimit = experimental_rateLimit();
+ * let rateLimit = rateLimit();
  *
  * @example
- * let rateLimit = experimental_rateLimit({ limit: 10, period: 60 });
+ * let rateLimit = rateLimit({ limit: 10, period: 60 });
  *
  * @example
  * let result = await rateLimit.limit({ key });
@@ -179,15 +182,15 @@ export function unstable_queue() {
  * @example
  * await rateLimit.reset(key);
  */
-export function experimental_rateLimit() {
-	return internal_store("rateLimit").rateLimit;
+export function rateLimit() {
+	return internal_store("rateLimit");
 }
 
 /**
  * Get access to the session storage for your Edge-first application.
  */
-export function experimental_sessionStorage() {
-	return internal_store("sessionStorage").sessionStorage;
+export function sessionStorage() {
+	return internal_store("sessionStorage");
 }
 
 export {

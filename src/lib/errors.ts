@@ -2,7 +2,7 @@ export class EdgeContextError extends Error {
 	override name = "EdgeContextError";
 
 	constructor(method: string) {
-		super(`You must run "Edge.${method}" from inside an Edge-first context.`);
+		super(`You must run "${method}()" from inside an Edge-first context.`);
 	}
 }
 

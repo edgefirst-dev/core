@@ -359,12 +359,12 @@ import { signal } from "@edgefirst-dev/core";
 signal().aborted;
 ```
 
-### unstable_ai
+### ai
 
-The `unstable_ai` object gives you access to the AI services powered by Cloudflare AI.
+The `ai` object gives you access to the AI services powered by Cloudflare AI.
 
 ```ts
-import { unstable_ai } from "@edgefirst-dev/core";
+import { ai } from "@edgefirst-dev/core";
 ```
 
 > [!WARNING]
@@ -375,94 +375,94 @@ import { unstable_ai } from "@edgefirst-dev/core";
 
 #### AI#textToImage
 
-The `unstable_ai().textToImage` method is used to generates images from input text. These models can be used to generate and modify images based on text prompts
+The `ai().textToImage` method is used to generates images from input text. These models can be used to generate and modify images based on text prompts
 
 ```ts
-let output = await unstable_ai().textToImage(model, inputs, options);
+let output = await ai().textToImage(model, inputs, options);
 ```
 
 #### AI#imageToText
 
-The `unstable_ai().imageToText` method is used to output a text from a given image. Image captioning or optical character recognition can be considered as the most common applications of image to text
+The `ai().imageToText` method is used to output a text from a given image. Image captioning or optical character recognition can be considered as the most common applications of image to text
 
 ```ts
-await unstable_ai().imageToText(model, inputs, options);
+await ai().imageToText(model, inputs, options);
 ```
 
 #### AI#translation
 
-The `unstable_ai().translation` method is used to convert a sequence of text from one language to another.
+The `ai().translation` method is used to convert a sequence of text from one language to another.
 
 ```ts
-await unstable_ai().translation(model, inputs, options);
+await ai().translation(model, inputs, options);
 ```
 
 #### AI#summarization
 
-The `unstable_ai().summarization` method is used to produce a shorter version of a document while preserving its important information.
+The `ai().summarization` method is used to produce a shorter version of a document while preserving its important information.
 
 ```ts
-await unstable_ai().summarization(model, inputs, options);
+await ai().summarization(model, inputs, options);
 ```
 
 #### AI#textEmbeddings
 
-The `unstable_ai().textEmbeddings` method is used to transform raw data into numerical features that can be processed while preserving the information in the original dataset.
+The `ai().textEmbeddings` method is used to transform raw data into numerical features that can be processed while preserving the information in the original dataset.
 
 ```ts
-await unstable_ai().textEmbeddings(model, inputs, options);
+await ai().textEmbeddings(model, inputs, options);
 ```
 
 #### AI#textGeneration
 
-The `unstable_ai().textGeneration` method is used to generate text based on a given prompt.
+The `ai().textGeneration` method is used to generate text based on a given prompt.
 
 ```ts
-await unstable_ai().objectDetection(model, inputs, options);
+await ai().objectDetection(model, inputs, options);
 ```
 
 ```ts
-await unstable_ai().speechRecognition(model, inputs, options);
+await ai().speechRecognition(model, inputs, options);
 ```
 
 ```ts
-await unstable_ai().textClassification(model, inputs, options);
+await ai().textClassification(model, inputs, options);
 ```
 
 ```ts
-await unstable_ai().imageClassification(model, inputs, options);
+await ai().imageClassification(model, inputs, options);
 ```
 
 #### AI#objectDetection
 
-The `unstable_ai().objectDetection` method is used to detect instances of objects like persons, faces, license plates, or others in an image.
+The `ai().objectDetection` method is used to detect instances of objects like persons, faces, license plates, or others in an image.
 
 ```ts
-await unstable_ai().objectDetection(model, inputs, options);
+await ai().objectDetection(model, inputs, options);
 ```
 
 #### AI#speechRecognition
 
-The `unstable_ai().speechRecognition` method is used to convert a speech signal, typically an audio input, to text.
+The `ai().speechRecognition` method is used to convert a speech signal, typically an audio input, to text.
 
 ```ts
-await unstable_ai().speechRecognition(model, inputs, options);
+await ai().speechRecognition(model, inputs, options);
 ```
 
 #### AI#textClassification
 
-The `unstable_ai().textClassification` method is used to classify a text input into labels or classes.
+The `ai().textClassification` method is used to classify a text input into labels or classes.
 
 ```ts
-await unstable_ai().textClassification(model, inputs, options);
+await ai().textClassification(model, inputs, options);
 ```
 
 #### AI#imageClassification
 
-The `unstable_ai().imageClassification` method is used to classify an image input into labels or classes.
+The `ai().imageClassification` method is used to classify an image input into labels or classes.
 
 ```ts
-await unstable_ai().imageClassification(model, inputs, options);
+await ai().imageClassification(model, inputs, options);
 ```
 
 #### AI#binding
@@ -470,18 +470,18 @@ await unstable_ai().imageClassification(model, inputs, options);
 A read-only property that gives you the Cloudflare `Ai` object used by the AI object.
 
 ```ts
-let service = unstable_ai().binding;
+let service = ai().binding;
 ```
 
 > [!TIP]
 > The service can be used to access the AIService directly in case you need to integrate with it.
 
-### unstable_queue
+### queue
 
-The `unstable_queue` object gives you access to a Queue publisher powered by Cloudflare Queue.
+The `queue` object gives you access to a Queue publisher powered by Cloudflare Queue.
 
 ```ts
-import { unstable_queue } from "@edgefirst-dev/core";
+import { queue } from "@edgefirst-dev/core";
 ```
 
 > [!WARNING]
@@ -492,10 +492,10 @@ import { unstable_queue } from "@edgefirst-dev/core";
 
 #### Queue#enqueue
 
-The `unstable_queue().enqueue` method is used to enqueue a payload in the queue.
+The `queue().enqueue` method is used to enqueue a payload in the queue.
 
 ```ts
-await unstable_queue().enqueue(payload, options);
+await queue().enqueue(payload, options);
 ```
 
 #### Queue#binding
@@ -503,18 +503,18 @@ await unstable_queue().enqueue(payload, options);
 A read-only property that gives you the Cloudflare `Queue` object used by the Queue object.
 
 ```ts
-let queue = unstable_queue().binding;
+let queue = queue().binding;
 ```
 
 > [!TIP]
 > The queue can be used to access the Queue directly in case you need to integrate with it.
 
-### unstable_geo
+### geo
 
-The `unstable_geo` object gives you access to the geolocation data powered by Cloudflare CDN.
+The `geo` object gives you access to the geolocation data powered by Cloudflare CDN.
 
 ```ts
-import { unstable_geo } from "@edgefirst-dev/core";
+import { geo } from "@edgefirst-dev/core";
 ```
 
 This function returns an object with the geolocation data. The object conforms to the interface:
@@ -537,12 +537,12 @@ interface Geo {
 > [!TIP]
 > The `Iso3166Alpha2Code` and `ContinentCode` are union types provided by Cloudflare Worker types package.
 
-### experimental_rateLimit
+### rateLimit
 
-The `experimental_rateLimit` object gives you access to the rate limiting object powered by Cloudflare Worker KV.
+The `rateLimit` object gives you access to the rate limiting object powered by Cloudflare Worker KV.
 
 ```ts
-import { experimental_rateLimit } from "@edgefirst-dev/core";
+import { rateLimit } from "@edgefirst-dev/core";
 ```
 
 > [!WARNING]
@@ -553,26 +553,26 @@ import { experimental_rateLimit } from "@edgefirst-dev/core";
 
 #### RateLimit#limit
 
-The `experimental_rateLimit().limit` method is used to limit the number of requests per key.
+The `rateLimit().limit` method is used to limit the number of requests per key.
 
 ```ts
-await experimental_rateLimit().limit({ key });
+await rateLimit().limit({ key });
 ```
 
 #### RateLimit#reset
 
-The `experimental_rateLimit().reset` method is used to reset the rate limit for a key.
+The `rateLimit().reset` method is used to reset the rate limit for a key.
 
 ```ts
-await experimental_rateLimit().reset({ key });
+await rateLimit().reset({ key });
 ```
 
 #### RateLimit#writeHttpMetadata
 
-The `experimental_rateLimit().writeHttpMetadata` method is used to write the rate limit metadata to the response headers.
+The `rateLimit().writeHttpMetadata` method is used to write the rate limit metadata to the response headers.
 
 ```ts
-await experimental_rateLimit().writeHttpMetadata({ key }, headers);
+await rateLimit().writeHttpMetadata({ key }, headers);
 ```
 
 ### Errors

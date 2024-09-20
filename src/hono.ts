@@ -26,7 +26,14 @@ import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
 export namespace edgeRuntime {
 	export interface Options {
-		orm: { schema: DatabaseSchema; logger?: Logger };
+		/** The options for the ORM. */
+		orm?: {
+			/** The database schema for the ORM. */
+			schema: DatabaseSchema;
+			/** The logger for the ORM. */
+			logger?: Logger;
+		};
+		/** The options for the rate limit. */
 		rateLimit?: WorkerKVRateLimit.Options;
 	}
 }
@@ -34,11 +41,25 @@ export namespace edgeRuntime {
 /**
  * Creates an Edge-first Runtime middleware for Hono. Any request after this
  * will have access to the Edge environment.
+ *
+ * @params options - The options for the middleware.
+ *
+ * @params options.orm - The options for the ORM.
+ * @params options.orm.schema - The database schema for the ORM.
+ * @params options.orm.logger - The logger for the ORM.
+ *
+ * @params options.rateLimit - The options for the rate limit.
+ * @params options.rateLimit.limit - The limit for the rate limit.
+ * @params options.rateLimit.period - The period for the rate limit.
+ *
  * @returns A Hono middleware that provides access to the Edge environment.
  *
  * @example
  * app.use(
- *   edgeRuntime({ orm: { schema }, rateLimit: { limit: 100, period: 60 } })
+ *   edgeRuntime({
+ *     orm: { schema },
+ *     rateLimit: { limit: 100, period: 60 }
+ *   })
  * );
  *
  * app.get("/", async () => {
@@ -48,63 +69,56 @@ export namespace edgeRuntime {
  *
  * @example
  * app.use(edgeRuntime({ orm:  { schema } }));
- *
- * app.use(async (c, next) => {
- *   let serverBuild = await importServerBuild();
- *   let handler = remix({
- *     build: serverBuild,
- *     mode: import.meta.env.PROD ? "production" : "development",
- *   });
- *   return handler(c, next);
- * });
- *
- * function importServerBuild(): Promise<ServerBuild> {
- *   if (process.env.NODE_ENV === "development") {
- *     return import("virtual:remix/server-build");
- *   }
- *   return import("../build/server");
- * }
  */
 export function edgeRuntime(options: edgeRuntime.Options) {
-	return createMiddleware<{ Bindings: Bindings }>((c, next) => {
+	return createMiddleware<{ Bindings: Bindings }>(async (c, next) => {
 		let request = c.req.raw;
 		let bindings = c.env;
 		let waitUntil = c.executionCtx.waitUntil.bind(c.executionCtx);
 
-		let cache = new Cache(bindings.KV, waitUntil);
-		let db = new DB(bindings.DB);
+		let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
+		let db = bindings.DB ? new DB(bindings.DB) : undefined;
 		let env = new Env(bindings);
-		let sessionStorage = new WorkerKVSessionStorage(bindings.KV);
-		let fs = new FS(bindings.FS);
-		let kv = new KV(bindings.KV);
-		let ai = new AI(bindings.AI);
+		let sessionStorage = bindings.KV
+			? new WorkerKVSessionStorage(bindings.KV)
+			: undefined;
+		let fs = bindings.FS ? new FS(bindings.FS) : undefined;
+		let kv = bindings.KV ? new KV(bindings.KV) : undefined;
+		let ai = bindings.AI ? new AI(bindings.AI) : undefined;
 		let geo = new Geo(request);
-		let queue = new Queue(bindings.QUEUE, waitUntil);
+		let queue = bindings.QUEUE
+			? new Queue(bindings.QUEUE, waitUntil)
+			: undefined;
 		let headers = new SuperHeaders(request.headers);
-		let orm = drizzle(bindings.DB, options.orm);
-		let rateLimit = new WorkerKVRateLimit(
-			bindings.KV,
-			options.rateLimit ?? { limit: 100, period: 60 },
-		);
+		let orm =
+			bindings.DB && options.orm
+				? drizzle(bindings.DB, options.orm)
+				: undefined;
+		let rateLimit = bindings.KV
+			? new WorkerKVRateLimit(
+					bindings.KV,
+					options.rateLimit ?? { limit: 100, period: 60 },
+				)
+			: undefined;
 
 		return storage.run(
 			{
-				cache,
+				ai,
 				db,
-				env,
-				sessionStorage,
 				fs,
 				kv,
-				ai,
+				env,
 				geo,
-				queue,
-				headers,
 				orm,
+				cache,
+				queue,
 				signal: request.signal,
-				rateLimit,
+				headers,
 				request,
 				bindings,
+				rateLimit,
 				waitUntil,
+				sessionStorage,
 			},
 			next,
 		);
