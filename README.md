@@ -13,44 +13,32 @@ bun add @edgefirst-dev/core
 In your Hono server, add the `edgeRuntime` middleware
 
 ```ts
-import type { Bindings } from "@edgefirst-dev/core"; // Binding types
-import { edgeRuntime } from "@edgefirst-dev/core/hono"; // The middleware
-import type { ServerBuild } from "@remix-run/cloudflare";
+import type { Bindings } from "@edgefirst-dev/core";
+import { edgeRuntime } from "@edgefirst-dev/core/hono";
 import { Hono } from "hono";
-import { staticAssets } from "remix-hono/cloudflare";
-import { remix } from "remix-hono/handler";
 
 import * as schema from "~/db/schema";
 
-// Use the Bindings from `@edgefirst-dev/core` or extend it with your custom bindings
 const app = new Hono<{ Bindings: Bindings }>();
-app.use(staticAssets());
 
-app.use(edgeRuntime({ orm: { schema } })); //Add it before your Remix handler
-
-app.use(async (c, next) => {
-  let serverBuild = await importServerBuild();
-  let handler = remix({
-    build: serverBuild,
-    mode: import.meta.env.PROD ? "production" : "development",
-    getLoadContext(c) {
-      return { cloudflare: { env: c.env, ctx: c.executionCtx } };
-    },
-  });
-  return handler(c, next);
-});
-
-function importServerBuild(): Promise<ServerBuild> {
-  if (process.env.NODE_ENV === "development") {
-    // @ts-expect-error - TS doesn't know about virtual:remix/server-build
-    return import("virtual:remix/server-build");
-  }
-
-  // @ts-expect-error - This file will not exists until we build the app
-  return import("../build/server");
-}
+// Add the edgeRuntime middleware
+app.use(edgeRuntime({ orm: { schema } }));
 
 export default app;
+
+declare module "@edgefirst-dev/core" {
+  // Extends @edgefirst-dev/core's Bindings with your bindings
+  interface Bindings {}
+
+  // Overwrite with the data you want to store in the session
+  interface SessionData {
+  }
+
+  // Extends @edgefirst-dev/core's DatabaseSchema with the schema of your app
+  interface DatabaseSchema {
+    users: typeof schema.users;
+  }
+}
 ```
 
 Now you can import the functions from `@edgefirst-dev/core` and use it in any part of your Remix app.
