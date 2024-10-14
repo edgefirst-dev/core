@@ -36,24 +36,24 @@
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
-		"@cloudflare/workers-types": "^4.20240919.0",
+		"@cloudflare/workers-types": "^4.20241011.0",
 		"@edgefirst-dev/r2-file-storage": "^1.0.0",
 		"@edgefirst-dev/worker-kv-rate-limit": "^1.0.0",
 		"@mjackson/form-data-parser": "^0.4.0",
 		"@mjackson/headers": "^0.7.2",
 		"drizzle-orm": "^0.34.1",
-		"hono": "^4.6.2",
+		"hono": "^4.6.4",
 		"type-fest": "^4.26.1"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.16.4",
-		"@biomejs/biome": "^1.9.2",
+		"@biomejs/biome": "^1.9.3",
 		"@total-typescript/tsconfig": "^1.0.4",
-		"@types/bun": "^1.1.9",
+		"@types/bun": "^1.1.11",
 		"consola": "^3.2.3",
-		"typedoc": "^0.26.7",
-		"typedoc-plugin-mdn-links": "^3.3.0",
-		"typescript": "^5.6.2",
-		"wrangler": "^3.78.6"
+		"typedoc": "^0.26.9",
+		"typedoc-plugin-mdn-links": "^3.3.3",
+		"typescript": "^5.6.3",
+		"wrangler": "^3.80.4"
 	}
 }
