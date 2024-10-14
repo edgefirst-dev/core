@@ -47,7 +47,7 @@
 		"@edgefirst-dev/worker-kv-rate-limit": "^1.0.0",
 		"@mjackson/form-data-parser": "^0.4.0",
 		"@mjackson/headers": "^0.7.2",
-		"drizzle-orm": "^0.33.0",
+		"drizzle-orm": "^0.34.1",
 		"hono": "^4.6.2",
 		"type-fest": "^4.26.1"
 	},
