@@ -21,7 +21,7 @@ import { storage } from "./lib/storage.js";
 import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
 export abstract class Runtime implements ExportedHandler<Bindings> {
-	constructor(private options: Runtime.Options) {}
+	constructor(private options?: Runtime.Options) {}
 
 	async fetch(request: Request, bindings: Bindings, ctx: ExecutionContext) {
 		return this.#runtime(request, bindings, ctx, this.onRequest.bind(this));
@@ -56,13 +56,13 @@ export abstract class Runtime implements ExportedHandler<Bindings> {
 			: undefined;
 		let headers = new SuperHeaders(request.headers);
 		let orm =
-			bindings.DB && this.options.orm
+			bindings.DB && this.options?.orm
 				? drizzle(bindings.DB, this.options.orm)
 				: undefined;
 		let rateLimit = bindings.KV
 			? new WorkerKVRateLimit(
 					bindings.KV,
-					this.options.rateLimit ?? { limit: 100, period: 60 },
+					this.options?.rateLimit ?? { limit: 100, period: 60 },
 				)
 			: undefined;
 
