@@ -25,13 +25,13 @@ export interface EdgeFirstContext {
 	fs?: FS;
 	kv?: KV;
 	env: Env;
-	geo: Geo;
+	geo?: Geo;
 	orm?: DrizzleD1Database<DatabaseSchema>;
 	cache?: Cache;
 	queue?: Queue;
-	signal: AbortSignal;
-	headers: SuperHeaders;
-	request: Request;
+	signal?: AbortSignal;
+	headers?: SuperHeaders;
+	request?: Request;
 	bindings?: Bindings;
 	rateLimit?: WorkerKVRateLimit;
 	waitUntil: WaitUntilFunction;
