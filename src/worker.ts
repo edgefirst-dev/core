@@ -20,8 +20,8 @@ import { storage } from "./lib/storage.js";
 import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
 export function bootstrap(
-	options: Runtime.Options,
-	handlers: Runtime.Handlers,
+	options: bootstrap.Options,
+	handlers: bootstrap.Handlers,
 ): ExportedHandler<Bindings> {
 	return {
 		fetch(request, bindings, ctx) {
@@ -78,7 +78,7 @@ export function bootstrap(
 	};
 }
 
-export namespace Runtime {
+export namespace bootstrap {
 	export interface Options {
 		/** The options for the ORM. */
 		orm?: {
