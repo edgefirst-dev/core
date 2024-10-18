@@ -1,7 +1,7 @@
 {
 	"$schema": "https://typedoc.org/schema.json",
 	"includeVersion": true,
-	"entryPoints": ["./src/index.ts", "./src/hono.ts"],
+	"entryPoints": ["./src/index.ts", "./src/hono.ts", "./src/worker.ts"],
 	"projectDocuments": ["./docs/**/*.md"],
 	"out": "pages",
 	"json": "pages/index.json",
