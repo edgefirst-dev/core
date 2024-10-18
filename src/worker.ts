@@ -1,4 +1,9 @@
-import type { ExportedHandlerFetchHandler } from "@cloudflare/workers-types";
+import type {
+	ExportedHandler,
+	ExportedHandlerFetchHandler,
+	Request,
+	Response,
+} from "@cloudflare/workers-types";
 import { WorkerKVRateLimit } from "@edgefirst-dev/worker-kv-rate-limit";
 import SuperHeaders from "@mjackson/headers";
 import type { Logger } from "drizzle-orm";
@@ -15,11 +20,25 @@ import { WorkerKVSessionStorage } from "./lib/session.js";
 import { storage } from "./lib/storage.js";
 import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
-export function runtime(
-	options: runtime.Options,
-	next: runtime.Callback,
-): ExportedHandlerFetchHandler<Bindings> {
-	return function fetch(request, bindings, ctx) {
+export abstract class Runtime implements ExportedHandler<Bindings> {
+	constructor(private options: Runtime.Options) {}
+
+	async fetch(request: Request, bindings: Bindings, ctx: ExecutionContext) {
+		return this.#runtime(request, bindings, ctx, this.onRequest.bind(this));
+	}
+
+	abstract onRequest(
+		request: Request,
+		bindings: Bindings,
+		ctx: ExecutionContext,
+	): Promise<Response>;
+
+	async #runtime(
+		request: Request,
+		bindings: Bindings,
+		ctx: ExecutionContext,
+		next: Runtime.Callback,
+	) {
 		let waitUntil = ctx.waitUntil.bind(ctx);
 
 		let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
@@ -37,13 +56,13 @@ export function runtime(
 			: undefined;
 		let headers = new SuperHeaders(request.headers);
 		let orm =
-			bindings.DB && options.orm
-				? drizzle(bindings.DB, options.orm)
+			bindings.DB && this.options.orm
+				? drizzle(bindings.DB, this.options.orm)
 				: undefined;
 		let rateLimit = bindings.KV
 			? new WorkerKVRateLimit(
 					bindings.KV,
-					options.rateLimit ?? { limit: 100, period: 60 },
+					this.options.rateLimit ?? { limit: 100, period: 60 },
 				)
 			: undefined;
 
@@ -60,18 +79,20 @@ export function runtime(
 				queue,
 				signal: request.signal,
 				headers,
-				// @ts-expect-error - This is ok
+				// @ts-expect-error - This is expected
 				request,
 				bindings,
 				rateLimit,
 				waitUntil,
 				sessionStorage,
 			},
+			// @ts-expect-error - This is expected
 			() => next(request, bindings, ctx),
 		);
-	};
+	}
 }
-export namespace runtime {
+
+export namespace Runtime {
 	export interface Options {
 		/** The options for the ORM. */
 		orm?: {
