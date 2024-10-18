@@ -26,7 +26,13 @@ export function bootstrap(
 	handlers: bootstrap.Handlers,
 ): ExportedHandler<Bindings> {
 	return {
-		fetch(request, bindings, ctx) {
+		async fetch(request, bindings, ctx) {
+			// Try to fetch from the ASSETS first, if it exists in the bindings
+			if (bindings.ASSETS) {
+				let response = await bindings.ASSETS.fetch(request);
+				if (response.ok) return response; // Return the response if it's ok
+			}
+
 			let waitUntil = ctx.waitUntil.bind(ctx);
 
 			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;

@@ -2,6 +2,7 @@ import type {
 	Ai,
 	D1Database,
 	ExecutionContext,
+	Fetcher,
 	KVNamespace,
 	Queue,
 	R2Bucket,
@@ -11,10 +12,11 @@ import type { Session } from "./session.js";
 export type WaitUntilFunction = ExecutionContext["waitUntil"];
 
 export interface Bindings {
-	KV: KVNamespace;
+	AI: Ai;
+	ASSETS: Fetcher;
 	DB: D1Database;
 	FS: R2Bucket;
-	AI: Ai;
+	KV: KVNamespace;
 	QUEUE: Queue;
 }
 
