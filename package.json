@@ -3,9 +3,7 @@
 	"version": "0.0.23",
 	"description": "The core of the Edge-first Stack",
 	"license": "MIT",
-	"funding": [
-		"https://github.com/sponsors/sergiodxa"
-	],
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"author": {
 		"name": "Sergio Xalambrí",
 		"email": "hello+oss@sergiodxa.com",
@@ -31,11 +29,7 @@
 	"engines": {
 		"node": ">=20.0.0"
 	},
-	"files": [
-		"build",
-		"package.json",
-		"README.md"
-	],
+	"files": ["build", "package.json", "README.md"],
 	"exports": {
 		".": "./build/index.js",
 		"./hono": "./build/hono.js",
@@ -48,19 +42,19 @@
 		"@edgefirst-dev/worker-kv-rate-limit": "^1.0.0",
 		"@mjackson/form-data-parser": "^0.4.0",
 		"@mjackson/headers": "^0.7.2",
-		"drizzle-orm": "^0.34.1",
-		"hono": "^4.6.4",
+		"drizzle-orm": "^0.35.1",
+		"hono": "^4.6.5",
 		"type-fest": "^4.26.1"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.16.4",
-		"@biomejs/biome": "^1.9.3",
+		"@biomejs/biome": "^1.9.4",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/bun": "^1.1.11",
 		"consola": "^3.2.3",
-		"typedoc": "^0.26.9",
+		"typedoc": "^0.26.10",
 		"typedoc-plugin-mdn-links": "^3.3.3",
 		"typescript": "^5.6.3",
-		"wrangler": "^3.80.4"
+		"wrangler": "^3.81.0"
 	}
 }
