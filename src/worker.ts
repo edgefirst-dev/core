@@ -1,6 +1,5 @@
 import type {
 	ExportedHandler,
-	ExportedHandlerFetchHandler,
 	Request,
 	Response,
 } from "@cloudflare/workers-types";
@@ -20,76 +19,63 @@ import { WorkerKVSessionStorage } from "./lib/session.js";
 import { storage } from "./lib/storage.js";
 import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
-export abstract class Runtime implements ExportedHandler<Bindings> {
-	constructor(private options?: Runtime.Options) {}
+export function bootstrap(
+	options: Runtime.Options,
+	handlers: Runtime.Handlers,
+): ExportedHandler<Bindings> {
+	return {
+		fetch(request, bindings, ctx) {
+			let waitUntil = ctx.waitUntil.bind(ctx);
 
-	async fetch(request: Request, bindings: Bindings, ctx: ExecutionContext) {
-		return this.#runtime(request, bindings, ctx, this.onRequest.bind(this));
-	}
-
-	abstract onRequest(
-		request: Request,
-		bindings: Bindings,
-		ctx: ExecutionContext,
-	): Promise<Response>;
-
-	async #runtime(
-		request: Request,
-		bindings: Bindings,
-		ctx: ExecutionContext,
-		next: Runtime.Callback,
-	) {
-		let waitUntil = ctx.waitUntil.bind(ctx);
-
-		let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
-		let db = bindings.DB ? new DB(bindings.DB) : undefined;
-		let env = new Env(bindings);
-		let sessionStorage = bindings.KV
-			? new WorkerKVSessionStorage(bindings.KV)
-			: undefined;
-		let fs = bindings.FS ? new FS(bindings.FS) : undefined;
-		let kv = bindings.KV ? new KV(bindings.KV) : undefined;
-		let ai = bindings.AI ? new AI(bindings.AI) : undefined;
-		let geo = new Geo(request);
-		let queue = bindings.QUEUE
-			? new Queue(bindings.QUEUE, waitUntil)
-			: undefined;
-		let headers = new SuperHeaders(request.headers);
-		let orm =
-			bindings.DB && this.options?.orm
-				? drizzle(bindings.DB, this.options.orm)
+			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
+			let db = bindings.DB ? new DB(bindings.DB) : undefined;
+			let env = new Env(bindings);
+			let sessionStorage = bindings.KV
+				? new WorkerKVSessionStorage(bindings.KV)
 				: undefined;
-		let rateLimit = bindings.KV
-			? new WorkerKVRateLimit(
-					bindings.KV,
-					this.options?.rateLimit ?? { limit: 100, period: 60 },
-				)
-			: undefined;
+			let fs = bindings.FS ? new FS(bindings.FS) : undefined;
+			let kv = bindings.KV ? new KV(bindings.KV) : undefined;
+			let ai = bindings.AI ? new AI(bindings.AI) : undefined;
+			let geo = new Geo(request);
+			let queue = bindings.QUEUE
+				? new Queue(bindings.QUEUE, waitUntil)
+				: undefined;
+			let headers = new SuperHeaders(request.headers);
+			let orm =
+				bindings.DB && options?.orm
+					? drizzle(bindings.DB, options.orm)
+					: undefined;
+			let rateLimit = bindings.KV
+				? new WorkerKVRateLimit(
+						bindings.KV,
+						options?.rateLimit ?? { limit: 100, period: 60 },
+					)
+				: undefined;
 
-		return storage.run(
-			{
-				ai,
-				db,
-				fs,
-				kv,
-				env,
-				geo,
-				orm,
-				cache,
-				queue,
-				signal: request.signal,
-				headers,
-				// @ts-expect-error - This is expected
-				request,
-				bindings,
-				rateLimit,
-				waitUntil,
-				sessionStorage,
-			},
-			// @ts-expect-error - This is expected
-			() => next(request, bindings, ctx),
-		);
-	}
+			return storage.run(
+				{
+					ai,
+					db,
+					fs,
+					kv,
+					env,
+					geo,
+					orm,
+					cache,
+					queue,
+					signal: request.signal,
+					headers,
+					// @ts-expect-error - This is expected
+					request,
+					bindings,
+					rateLimit,
+					waitUntil,
+					sessionStorage,
+				},
+				() => handlers.onRequest(request, bindings, ctx),
+			);
+		},
+	};
 }
 
 export namespace Runtime {
@@ -105,5 +91,11 @@ export namespace Runtime {
 		rateLimit?: WorkerKVRateLimit.Options;
 	}
 
-	export type Callback = ExportedHandlerFetchHandler<Bindings>;
+	export interface Handlers {
+		onRequest(
+			request: Request,
+			bindings: Bindings,
+			ctx: ExecutionContext,
+		): Promise<Response>;
+	}
 }
