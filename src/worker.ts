@@ -28,7 +28,7 @@ export function bootstrap(
 	return {
 		async fetch(request, bindings, ctx) {
 			// Try to fetch from the ASSETS first, if it exists in the bindings
-			if (bindings.ASSETS) {
+			if (request.method === "GET" && bindings.ASSETS) {
 				let response = await bindings.ASSETS.fetch(request);
 				if (response.ok) return response; // Return the response if it's ok
 			}
