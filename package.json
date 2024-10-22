@@ -3,9 +3,7 @@
 	"version": "0.0.31",
 	"description": "The core of the Edge-first Stack",
 	"license": "MIT",
-	"funding": [
-		"https://github.com/sponsors/sergiodxa"
-	],
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"author": {
 		"name": "Sergio Xalambrí",
 		"email": "hello+oss@sergiodxa.com",
@@ -31,11 +29,7 @@
 	"engines": {
 		"node": ">=20.0.0"
 	},
-	"files": [
-		"build",
-		"package.json",
-		"README.md"
-	],
+	"files": ["build", "package.json", "README.md"],
 	"exports": {
 		".": "./build/index.js",
 		"./hono": "./build/hono.js",
@@ -44,6 +38,7 @@
 	},
 	"dependencies": {
 		"@cloudflare/workers-types": "^4.20241011.0",
+		"@edgefirst-dev/data": "^0.0.2",
 		"@edgefirst-dev/r2-file-storage": "^1.0.0",
 		"@edgefirst-dev/worker-kv-rate-limit": "^1.0.0",
 		"@mjackson/form-data-parser": "^0.4.0",
