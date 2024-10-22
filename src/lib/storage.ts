@@ -6,6 +6,7 @@ import type { AI } from "./ai.js";
 import type { Cache } from "./cache.js";
 import type { DB } from "./db.js";
 import type { Env } from "./env.js";
+import { EdgeContextError } from "./errors.js";
 import type { FS } from "./fs.js";
 import type { Geo } from "./geo.js";
 import type { KV } from "./kv.js";
@@ -39,3 +40,13 @@ export interface EdgeFirstContext {
 }
 
 export const storage = new AsyncLocalStorage<EdgeFirstContext>();
+
+export function store<K extends keyof EdgeFirstContext>(
+	key: K,
+): NonNullable<EdgeFirstContext[K]> {
+	let store = storage.getStore();
+	if (!store) throw new EdgeContextError(key);
+	let value = store[key];
+	if (!value) throw new EdgeContextError(key);
+	return value;
+}

@@ -5,6 +5,7 @@ import type {
 	Response,
 	ScheduledController,
 } from "@cloudflare/workers-types";
+import type { Data } from "@edgefirst-dev/data";
 import { WorkerKVRateLimit } from "@edgefirst-dev/worker-kv-rate-limit";
 import SuperHeaders from "@mjackson/headers";
 import type { Logger } from "drizzle-orm";
@@ -15,6 +16,8 @@ import { DB } from "./lib/db.js";
 import { Env } from "./lib/env.js";
 import { FS } from "./lib/fs.js";
 import { Geo } from "./lib/geo.js";
+import type { Job } from "./lib/job.js";
+import { JobsManager } from "./lib/jobs-manager.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
 import { WorkerKVSessionStorage } from "./lib/session.js";
@@ -135,10 +138,10 @@ export function bootstrap(
 			);
 		},
 
-		queue(batch: MessageBatch, bindings, ctx) {
-			if (!handlers.onQueue) {
+		queue(batch, bindings, ctx) {
+			if (!options.jobs && !handlers.onQueue) {
 				throw new Error(
-					"To use queue consumers, you must provide an onQueue handler when bootstrapping your application.",
+					"To use queue consumers, you must provide an onQueue handler when bootstrapping your application or a jobs list.",
 				);
 			}
 
@@ -182,7 +185,14 @@ export function bootstrap(
 					waitUntil,
 					sessionStorage,
 				},
-				() => handlers.onQueue?.(batch, bindings, ctx),
+				() => {
+					if (handlers.onQueue) return handlers.onQueue(batch, bindings, ctx);
+					let manager = new JobsManager();
+					if (options.jobs) {
+						for (let job of options.jobs()) manager.register(job);
+					}
+					manager.processBatch(batch);
+				},
 			);
 		},
 	};
@@ -199,6 +209,8 @@ export namespace bootstrap {
 		};
 		/** The options for the rate limit. */
 		rateLimit?: WorkerKVRateLimit.Options;
+		/** A function that returns the list of jobs to register */
+		jobs?(): Job<Data>[];
 	}
 
 	export interface Handlers {

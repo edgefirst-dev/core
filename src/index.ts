@@ -14,13 +14,17 @@ import { Geo } from "./lib/geo.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
 import { type Session, WorkerKVSessionStorage } from "./lib/session.js";
-import { type EdgeFirstContext, storage } from "./lib/storage.js";
+import { store } from "./lib/storage.js";
 import type {
 	Bindings,
 	DatabaseSchema,
 	SessionData,
 	SessionFlashData,
 } from "./lib/types.js";
+
+// biome-ignore lint/performance/noBarrelFile: This is ok
+export { Job } from "./lib/job.js";
+export { JobsManager } from "./lib/jobs-manager.js";
 
 export type {
 	AI,
@@ -36,22 +40,12 @@ export type {
 	Session,
 };
 
-function internal_store<K extends keyof EdgeFirstContext>(
-	key: K,
-): NonNullable<EdgeFirstContext[K]> {
-	let store = storage.getStore();
-	if (!store) throw new EdgeContextError(key);
-	let value = store[key];
-	if (!value) throw new EdgeContextError(key);
-	return value;
-}
-
 /**
  * Upload, store and serve images, videos, music, documents and other
  * unstructured data in your Edge-first application.
  */
 export function fs() {
-	return internal_store("fs");
+	return store("fs");
 }
 
 /**
@@ -65,7 +59,7 @@ export function fs() {
  * same instance of the cache object.
  */
 export function cache() {
-	return internal_store("cache");
+	return store("cache");
 }
 
 /**
@@ -73,7 +67,7 @@ export function cache() {
  * relational data.
  */
 export function db() {
-	return internal_store("db");
+	return store("db");
 }
 
 /**
@@ -81,7 +75,7 @@ export function db() {
  * to your D1 database.
  */
 export function orm() {
-	return internal_store("orm");
+	return store("orm");
 }
 
 /**
@@ -89,7 +83,7 @@ export function orm() {
  * type-safe way.
  */
 export function env() {
-	return internal_store("env");
+	return store("env");
 }
 
 /**
@@ -97,14 +91,14 @@ export function env() {
  * application.
  */
 export function kv() {
-	return internal_store("kv");
+	return store("kv");
 }
 
 /**
  * Access the request object in your Edge-first application.
  */
 export function request() {
-	return internal_store("request");
+	return store("request");
 }
 
 /**
@@ -112,21 +106,21 @@ export function request() {
  * application.
  */
 export function signal() {
-	return internal_store("signal");
+	return store("signal");
 }
 
 /**
  * Access the headers of the request in your Edge-first application.
  */
 export function headers() {
-	return internal_store("headers");
+	return store("headers");
 }
 
 /**
  * Run machine learning models, such as LLMs in your Edge-first application.
  */
 export function ai() {
-	return internal_store("ai");
+	return store("ai");
 }
 
 /**
@@ -134,14 +128,14 @@ export function ai() {
  * application.
  */
 export function geo() {
-	return internal_store("geo");
+	return store("geo");
 }
 
 /**
  * Enqueue for processing later any kind of payload of data.
  */
 export function queue() {
-	return internal_store("queue");
+	return store("queue");
 }
 
 /**
@@ -183,14 +177,14 @@ export function queue() {
  * await rateLimit.reset(key);
  */
 export function rateLimit() {
-	return internal_store("rateLimit");
+	return store("rateLimit");
 }
 
 /**
  * Get access to the session storage for your Edge-first application.
  */
 export function sessionStorage() {
-	return internal_store("sessionStorage");
+	return store("sessionStorage");
 }
 
 export {
