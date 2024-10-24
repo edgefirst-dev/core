@@ -1,18 +1,18 @@
-import { WorkerKVRateLimit } from "@edgefirst-dev/worker-kv-rate-limit";
-import { AI } from "./lib/ai.js";
-import { Cache } from "./lib/cache.js";
-import { DB } from "./lib/db.js";
-import { Env } from "./lib/env.js";
+import type { WorkerKVRateLimit } from "@edgefirst-dev/worker-kv-rate-limit";
+import type { AI } from "./lib/ai.js";
+import type { Cache } from "./lib/cache.js";
+import type { DB } from "./lib/db.js";
+import type { Env } from "./lib/env.js";
 import {
 	EdgeConfigError,
 	EdgeContextError,
 	EdgeEnvKeyError,
 	EdgeRequestGeoError,
 } from "./lib/errors.js";
-import { FS } from "./lib/fs.js";
-import { Geo } from "./lib/geo.js";
-import { KV } from "./lib/kv.js";
-import { Queue } from "./lib/queue.js";
+import type { FS } from "./lib/fs.js";
+import type { Geo } from "./lib/geo.js";
+import type { KV } from "./lib/kv.js";
+import type { Queue } from "./lib/queue.js";
 import { type Session, WorkerKVSessionStorage } from "./lib/session.js";
 import { store } from "./lib/storage.js";
 import type {
