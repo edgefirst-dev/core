@@ -1,5 +1,6 @@
 import type { Data } from "@edgefirst-dev/data";
 import type { ObjectParser } from "@edgefirst-dev/data/parser";
+import type { JsonObject } from "type-fest";
 import { store } from "../storage.js";
 
 /**
@@ -79,7 +80,7 @@ export abstract class Job<Input extends Data> {
 	 * @example
 	 * MyJob.enqueue({ userId: 123, action: 'process' });
 	 */
-	static enqueue<T extends object>(message: T) {
+	static enqueue<T extends JsonObject>(message: T) {
 		// biome-ignore lint/complexity/noThisInStatic: We need it for better DX
 		store("queue").enqueue({ job: this.name, ...message });
 	}
