@@ -32,7 +32,6 @@
 	"files": ["build", "package.json", "README.md"],
 	"exports": {
 		".": "./build/index.js",
-		"./hono": "./build/hono.js",
 		"./worker": "./build/worker.js",
 		"./package.json": "./package.json"
 	},
@@ -44,7 +43,6 @@
 		"@mjackson/form-data-parser": "^0.4.0",
 		"@mjackson/headers": "^0.7.2",
 		"drizzle-orm": "^0.35.1",
-		"hono": "^4.6.5",
 		"type-fest": "^4.26.1"
 	},
 	"devDependencies": {
