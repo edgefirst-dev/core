@@ -21,6 +21,8 @@ import { JobsManager } from "./lib/jobs/manager.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
 import { storage } from "./lib/storage.js";
+import { TaskManager } from "./lib/tasks/manager.js";
+import type { Task } from "./lib/tasks/task.js";
 import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
 export function bootstrap(
@@ -29,6 +31,7 @@ export function bootstrap(
 	return {
 		async fetch(request, bindings, ctx) {
 			let waitUntil = ctx.waitUntil.bind(ctx);
+			let passThroughOnException = ctx.passThroughOnException.bind(ctx);
 
 			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
 			let db = bindings.DB ? new DB(bindings.DB) : undefined;
@@ -70,19 +73,21 @@ export function bootstrap(
 					bindings,
 					rateLimit,
 					waitUntil,
+					passThroughOnException,
 				},
 				() => options.onRequest(request, bindings, ctx),
 			);
 		},
 
 		scheduled(event, bindings, ctx) {
-			if (!options.onSchedule) {
+			if (!options.tasks && !options.onSchedule) {
 				throw new Error(
-					"To use scheduled events, you must provide an onSchedule handler when bootstrapping your application.",
+					"To use scheduled events, you must provide an onSchedule handler when bootstrapping your application or a tasks list.",
 				);
 			}
 
 			let waitUntil = ctx.waitUntil.bind(ctx);
+			let passThroughOnException = ctx.passThroughOnException.bind(ctx);
 
 			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
 			let db = bindings.DB ? new DB(bindings.DB) : undefined;
@@ -117,8 +122,21 @@ export function bootstrap(
 					bindings,
 					rateLimit,
 					waitUntil,
+					passThroughOnException,
 				},
-				() => options.onSchedule?.(event, bindings, ctx),
+				() => {
+					options.onSchedule?.(event, bindings, ctx);
+
+					if (options.onSchedule) {
+						return options.onSchedule(event, bindings, ctx);
+					}
+
+					let manager = new TaskManager();
+					if (options.tasks) {
+						for (let task of options.tasks()) manager.schedule(task);
+					}
+					manager.process(event);
+				},
 			);
 		},
 
@@ -130,6 +148,7 @@ export function bootstrap(
 			}
 
 			let waitUntil = ctx.waitUntil.bind(ctx);
+			let passThroughOnException = ctx.passThroughOnException.bind(ctx);
 
 			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
 			let db = bindings.DB ? new DB(bindings.DB) : undefined;
@@ -164,6 +183,7 @@ export function bootstrap(
 					bindings,
 					rateLimit,
 					waitUntil,
+					passThroughOnException,
 				},
 				() => {
 					if (options.onQueue) return options.onQueue(batch, bindings, ctx);
@@ -193,6 +213,7 @@ export namespace bootstrap {
 
 		/** A function that returns the list of jobs to register */
 		jobs?(): Job<Data>[];
+		tasks?(): Task[];
 
 		/** The function that will run every time a new request comes in */
 		onRequest(

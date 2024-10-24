@@ -11,7 +11,12 @@ import type { FS } from "./fs.js";
 import type { Geo } from "./geo.js";
 import type { KV } from "./kv.js";
 import type { Queue } from "./queue.js";
-import type { Bindings, DatabaseSchema, WaitUntilFunction } from "./types.js";
+import type {
+	Bindings,
+	DatabaseSchema,
+	PassThroughOnExceptionFunction,
+	WaitUntilFunction,
+} from "./types.js";
 
 export interface EdgeFirstContext {
 	ai?: AI;
@@ -29,6 +34,7 @@ export interface EdgeFirstContext {
 	bindings?: Bindings;
 	rateLimit?: WorkerKVRateLimit;
 	waitUntil: WaitUntilFunction;
+	passThroughOnException: PassThroughOnExceptionFunction;
 }
 
 export const storage = new AsyncLocalStorage<EdgeFirstContext>();

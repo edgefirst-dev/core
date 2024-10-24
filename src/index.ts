@@ -3,35 +3,26 @@ import type { AI } from "./lib/ai.js";
 import type { Cache } from "./lib/cache.js";
 import type { DB } from "./lib/db.js";
 import type { Env } from "./lib/env.js";
-import {
-	EdgeConfigError,
-	EdgeContextError,
-	EdgeEnvKeyError,
-	EdgeError,
-	EdgeRequestGeoError,
-} from "./lib/errors.js";
 import type { FS } from "./lib/fs.js";
 import type { Geo } from "./lib/geo.js";
 import type { KV } from "./lib/kv.js";
 import type { Queue } from "./lib/queue.js";
 import { store } from "./lib/storage.js";
-import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
 // biome-ignore lint/performance/noBarrelFile: This is ok
 export { Job } from "./lib/jobs/job.js";
 export type { JobsManager } from "./lib/jobs/manager.js";
-
-export type { AI, Cache, DB, Env, FS, Geo, KV, Queue, WorkerKVRateLimit };
-
+export { Task } from "./lib/tasks/task.js";
 export {
 	EdgeConfigError,
 	EdgeContextError,
 	EdgeEnvKeyError,
 	EdgeError,
 	EdgeRequestGeoError,
-};
+} from "./lib/errors.js";
+export type { Bindings, DatabaseSchema } from "./lib/types.js";
 
-export type { Bindings, DatabaseSchema };
+export type { AI, Cache, DB, Env, FS, Geo, KV, Queue, WorkerKVRateLimit };
 
 /**
  * Upload, store and serve images, videos, music, documents and other
