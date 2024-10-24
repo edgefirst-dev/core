@@ -13,7 +13,6 @@ export type WaitUntilFunction = ExecutionContext["waitUntil"];
 
 export interface Bindings {
 	AI: Ai;
-	ASSETS: Fetcher;
 	DB: D1Database;
 	FS: R2Bucket;
 	KV: KVNamespace;
