@@ -2,7 +2,6 @@ import type {
 	Ai,
 	D1Database,
 	ExecutionContext,
-	Fetcher,
 	KVNamespace,
 	Queue,
 	R2Bucket,
