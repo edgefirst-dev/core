@@ -1,6 +1,6 @@
 import type { Data } from "@edgefirst-dev/data";
 import type { ObjectParser } from "@edgefirst-dev/data/parser";
-import { store } from "./storage.js";
+import { store } from "../storage.js";
 
 /**
  * The `Job` class provides a structure for defining and processing background jobs with automatic validation.

@@ -16,17 +16,15 @@ import { DB } from "./lib/db.js";
 import { Env } from "./lib/env.js";
 import { FS } from "./lib/fs.js";
 import { Geo } from "./lib/geo.js";
-import type { Job } from "./lib/job.js";
-import { JobsManager } from "./lib/jobs-manager.js";
+import type { Job } from "./lib/jobs/job.js";
+import { JobsManager } from "./lib/jobs/manager.js";
 import { KV } from "./lib/kv.js";
 import { Queue } from "./lib/queue.js";
-import { WorkerKVSessionStorage } from "./lib/session.js";
 import { storage } from "./lib/storage.js";
 import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
 export function bootstrap(
 	options: bootstrap.Options,
-	handlers: bootstrap.Handlers,
 ): ExportedHandler<Bindings> {
 	return {
 		async fetch(request, bindings, ctx) {
@@ -35,9 +33,6 @@ export function bootstrap(
 			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
 			let db = bindings.DB ? new DB(bindings.DB) : undefined;
 			let env = new Env(bindings);
-			let sessionStorage = bindings.KV
-				? new WorkerKVSessionStorage(bindings.KV)
-				: undefined;
 			let fs = bindings.FS ? new FS(bindings.FS) : undefined;
 			let kv = bindings.KV ? new KV(bindings.KV) : undefined;
 			let ai = bindings.AI ? new AI(bindings.AI) : undefined;
@@ -75,14 +70,13 @@ export function bootstrap(
 					bindings,
 					rateLimit,
 					waitUntil,
-					sessionStorage,
 				},
-				() => handlers.onRequest(request, bindings, ctx),
+				() => options.onRequest(request, bindings, ctx),
 			);
 		},
 
 		scheduled(event, bindings, ctx) {
-			if (!handlers.onSchedule) {
+			if (!options.onSchedule) {
 				throw new Error(
 					"To use scheduled events, you must provide an onSchedule handler when bootstrapping your application.",
 				);
@@ -93,9 +87,6 @@ export function bootstrap(
 			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
 			let db = bindings.DB ? new DB(bindings.DB) : undefined;
 			let env = new Env(bindings);
-			let sessionStorage = bindings.KV
-				? new WorkerKVSessionStorage(bindings.KV)
-				: undefined;
 			let fs = bindings.FS ? new FS(bindings.FS) : undefined;
 			let kv = bindings.KV ? new KV(bindings.KV) : undefined;
 			let ai = bindings.AI ? new AI(bindings.AI) : undefined;
@@ -126,14 +117,13 @@ export function bootstrap(
 					bindings,
 					rateLimit,
 					waitUntil,
-					sessionStorage,
 				},
-				() => handlers.onSchedule?.(event, bindings, ctx),
+				() => options.onSchedule?.(event, bindings, ctx),
 			);
 		},
 
 		queue(batch, bindings, ctx) {
-			if (!options.jobs && !handlers.onQueue) {
+			if (!options.jobs && !options.onQueue) {
 				throw new Error(
 					"To use queue consumers, you must provide an onQueue handler when bootstrapping your application or a jobs list.",
 				);
@@ -144,9 +134,6 @@ export function bootstrap(
 			let cache = bindings.KV ? new Cache(bindings.KV, waitUntil) : undefined;
 			let db = bindings.DB ? new DB(bindings.DB) : undefined;
 			let env = new Env(bindings);
-			let sessionStorage = bindings.KV
-				? new WorkerKVSessionStorage(bindings.KV)
-				: undefined;
 			let fs = bindings.FS ? new FS(bindings.FS) : undefined;
 			let kv = bindings.KV ? new KV(bindings.KV) : undefined;
 			let ai = bindings.AI ? new AI(bindings.AI) : undefined;
@@ -177,10 +164,9 @@ export function bootstrap(
 					bindings,
 					rateLimit,
 					waitUntil,
-					sessionStorage,
 				},
 				() => {
-					if (handlers.onQueue) return handlers.onQueue(batch, bindings, ctx);
+					if (options.onQueue) return options.onQueue(batch, bindings, ctx);
 					let manager = new JobsManager();
 					if (options.jobs) {
 						for (let job of options.jobs()) manager.register(job);
@@ -201,25 +187,28 @@ export namespace bootstrap {
 			/** The logger for the ORM. */
 			logger?: Logger;
 		};
+
 		/** The options for the rate limit. */
 		rateLimit?: WorkerKVRateLimit.Options;
+
 		/** A function that returns the list of jobs to register */
 		jobs?(): Job<Data>[];
-	}
 
-	export interface Handlers {
+		/** The function that will run every time a new request comes in */
 		onRequest(
 			request: Request,
 			bindings: Bindings,
 			ctx: ExecutionContext,
 		): Promise<Response>;
 
+		/** The function that will run every time a scheduled task is executed */
 		onSchedule?(
 			event: ScheduledController,
 			bindings: Bindings,
 			ctx: ExecutionContext,
 		): Promise<void>;
 
+		/** The function that will run every time a queue message is consumed */
 		onQueue?(
 			batch: MessageBatch,
 			bindings: Bindings,

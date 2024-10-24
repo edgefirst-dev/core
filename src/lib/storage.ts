@@ -11,14 +11,7 @@ import type { FS } from "./fs.js";
 import type { Geo } from "./geo.js";
 import type { KV } from "./kv.js";
 import type { Queue } from "./queue.js";
-import type { WorkerKVSessionStorage } from "./session.js";
-import type {
-	Bindings,
-	DatabaseSchema,
-	SessionData,
-	SessionFlashData,
-	WaitUntilFunction,
-} from "./types.js";
+import type { Bindings, DatabaseSchema, WaitUntilFunction } from "./types.js";
 
 export interface EdgeFirstContext {
 	ai?: AI;
@@ -36,7 +29,6 @@ export interface EdgeFirstContext {
 	bindings?: Bindings;
 	rateLimit?: WorkerKVRateLimit;
 	waitUntil: WaitUntilFunction;
-	sessionStorage?: WorkerKVSessionStorage<SessionData, SessionFlashData>;
 }
 
 export const storage = new AsyncLocalStorage<EdgeFirstContext>();

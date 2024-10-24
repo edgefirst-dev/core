@@ -7,38 +7,31 @@ import {
 	EdgeConfigError,
 	EdgeContextError,
 	EdgeEnvKeyError,
+	EdgeError,
 	EdgeRequestGeoError,
 } from "./lib/errors.js";
 import type { FS } from "./lib/fs.js";
 import type { Geo } from "./lib/geo.js";
 import type { KV } from "./lib/kv.js";
 import type { Queue } from "./lib/queue.js";
-import { type Session, WorkerKVSessionStorage } from "./lib/session.js";
 import { store } from "./lib/storage.js";
-import type {
-	Bindings,
-	DatabaseSchema,
-	SessionData,
-	SessionFlashData,
-} from "./lib/types.js";
+import type { Bindings, DatabaseSchema } from "./lib/types.js";
 
 // biome-ignore lint/performance/noBarrelFile: This is ok
-export { Job } from "./lib/job.js";
-export { JobsManager } from "./lib/jobs-manager.js";
+export { Job } from "./lib/jobs/job.js";
+export type { JobsManager } from "./lib/jobs/manager.js";
 
-export type {
-	AI,
-	Cache,
-	DB,
-	Env,
-	FS,
-	Geo,
-	KV,
-	Queue,
-	WorkerKVRateLimit,
-	WorkerKVSessionStorage,
-	Session,
+export type { AI, Cache, DB, Env, FS, Geo, KV, Queue, WorkerKVRateLimit };
+
+export {
+	EdgeConfigError,
+	EdgeContextError,
+	EdgeEnvKeyError,
+	EdgeError,
+	EdgeRequestGeoError,
 };
+
+export type { Bindings, DatabaseSchema };
 
 /**
  * Upload, store and serve images, videos, music, documents and other
@@ -179,19 +172,3 @@ export function queue() {
 export function rateLimit() {
 	return store("rateLimit");
 }
-
-/**
- * Get access to the session storage for your Edge-first application.
- */
-export function sessionStorage() {
-	return store("sessionStorage");
-}
-
-export {
-	EdgeConfigError,
-	EdgeContextError,
-	EdgeEnvKeyError,
-	EdgeRequestGeoError,
-};
-
-export type { Bindings, SessionData, SessionFlashData, DatabaseSchema };
