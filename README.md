@@ -23,7 +23,13 @@ export default bootstrap({
 
   jobs() {
     // Register your jobs here
+    return [];
   },
+
+  tasks() {
+    // Schedule your tasks here
+    return [];
+  }
 
   async onRequest(request) {
     return new Response("Hello, World!", { status: 200 });
