@@ -163,3 +163,7 @@ export function queue() {
 export function rateLimit() {
 	return store("rateLimit");
 }
+
+export function waitUntil(promise: Promise<unknown>) {
+	return store("waitUntil")(promise);
+}
