@@ -1,4 +1,8 @@
-export class EdgeContextError extends Error {
+export class EdgeError extends Error {
+	override name = "EdgeError";
+}
+
+export class EdgeContextError extends EdgeError {
 	override name = "EdgeContextError";
 
 	constructor(method: string) {
@@ -6,7 +10,7 @@ export class EdgeContextError extends Error {
 	}
 }
 
-export class EdgeConfigError extends Error {
+export class EdgeConfigError extends EdgeError {
 	override name = "EdgeConfigError";
 
 	constructor(key: string) {
@@ -14,7 +18,7 @@ export class EdgeConfigError extends Error {
 	}
 }
 
-export class EdgeEnvKeyError extends Error {
+export class EdgeEnvKeyError extends EdgeError {
 	override name = "EdgeEnvKeyError";
 
 	constructor(key: string) {
@@ -22,7 +26,7 @@ export class EdgeEnvKeyError extends Error {
 	}
 }
 
-export class EdgeRequestGeoError extends Error {
+export class EdgeRequestGeoError extends EdgeError {
 	override name = "EdgeRequestGeoError";
 	override message =
 		"The request object does not contain the 'cf' property required to access the geolocation information.";
