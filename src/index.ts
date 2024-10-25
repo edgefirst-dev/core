@@ -14,7 +14,6 @@ export { Task } from "./lib/tasks/task.js";
 export {
 	ai,
 	cache,
-	db,
 	env,
 	fs,
 	geo,
