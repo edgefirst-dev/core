@@ -29,7 +29,7 @@ export {
 export { IPAddress } from "./lib/values/ip-address.js";
 export { Password } from "./lib/values/password.js";
 export { PwnedPasswords } from "./lib/clients/pwned-passwords.js";
-export { StringParser } from "./lib/parsers/string-parser.js";
+export { StringParser, type CUID } from "./lib/parsers/string-parser.js";
 export { NumberParser } from "./lib/parsers/number-parser.js";
 export { Entity, TableEntity } from "./lib/entities/entity.js";
 export {
