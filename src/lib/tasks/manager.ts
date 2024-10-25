@@ -1,4 +1,5 @@
 import type { ScheduledController } from "@cloudflare/workers-types";
+import { waitUntil } from "../wait-until.js";
 import type { Task } from "./task.js";
 
 export class TaskManager {
@@ -9,10 +10,10 @@ export class TaskManager {
 		return this;
 	}
 
-	async process(event: ScheduledController): Promise<void> {
+	process(event: ScheduledController): void {
 		let now = new Date(event.scheduledTime);
 		for (let task of this.#tasks) {
-			if (this.shouldRunTask(task, now)) await task.perform();
+			if (this.shouldRunTask(task, now)) waitUntil(task.perform());
 		}
 	}
 
