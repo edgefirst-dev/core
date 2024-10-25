@@ -1,6 +1,7 @@
 import type { Message } from "@cloudflare/workers-types";
 import type { Data } from "@edgefirst-dev/data";
 import { ObjectParser } from "@edgefirst-dev/data/parser";
+import { waitUntil } from "../wait-until.js";
 import type { Job } from "./job.js";
 
 /**
@@ -46,11 +47,14 @@ export class JobsManager {
 	 * If an error occurs during processing, the optional `onError` function is
 	 * called with the error and the message to help you debug and retry it.
 	 *
+	 * Every job processed in the batch is passed to waitUntil so that the batch
+	 * is processed in parallel and doesn't need to be awaited.
+	 *
 	 * @param batch - The batch of messages to process.
 	 * @param onError - An optional callback function to handle errors during processing.
 	 *
 	 * @example
-	 * await manager.performBatch(batch, (error, message) => {
+	 * manager.performBatch(batch, (error, message) => {
 	 *   console.error(error);
 	 *   message.retry();
 	 * });
@@ -59,7 +63,9 @@ export class JobsManager {
 		batch: MessageBatch,
 		onError?: JobsManager.ErrorFunction,
 	): Promise<void> {
-		for (let message of batch.messages) await this.process(message, onError);
+		for (let message of batch.messages) {
+			waitUntil(this.process(message, onError));
+		}
 	}
 
 	/**
