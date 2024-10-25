@@ -13,6 +13,7 @@ import { store } from "./lib/storage.js";
 export { Job } from "./lib/jobs/job.js";
 export type { JobsManager } from "./lib/jobs/manager.js";
 export { Task } from "./lib/tasks/task.js";
+export { waitUntil } from "./lib/wait-until.js";
 export {
 	EdgeConfigError,
 	EdgeContextError,
@@ -162,8 +163,4 @@ export function queue() {
  */
 export function rateLimit() {
 	return store("rateLimit");
-}
-
-export function waitUntil(promise: Promise<unknown>) {
-	return store("waitUntil")(promise);
 }
