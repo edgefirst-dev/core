@@ -191,7 +191,10 @@ export function bootstrap(
 					if (options.jobs) {
 						for (let job of options.jobs()) manager.register(job);
 					}
-					manager.processBatch(batch);
+					manager.processBatch(batch, (error, message) => {
+						console.log(error);
+						message.retry();
+					});
 				},
 			);
 		},
