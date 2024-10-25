@@ -28,6 +28,7 @@ export {
 } from "./lib/storage/accessors.js";
 export { IPAddress } from "./lib/values/ip-address.js";
 export { Password } from "./lib/values/password.js";
+export { UserAgent } from "./lib/values/user-agent.js";
 export { PwnedPasswords } from "./lib/clients/pwned-passwords.js";
 export { StringParser, type CUID } from "./lib/parsers/string-parser.js";
 export { NumberParser } from "./lib/parsers/number-parser.js";
