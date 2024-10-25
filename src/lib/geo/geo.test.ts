@@ -1,10 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import type {
-	Request as CfRequest,
-	RequestInit,
-} from "@cloudflare/workers-types";
+import type { Request as CfRequest } from "@cloudflare/workers-types";
 
-import { EdgeRequestGeoError } from "./errors.js";
+import { EdgeRequestGeoError } from "../errors.js";
 import { Geo } from "./geo.js";
 
 describe(Geo.name, () => {

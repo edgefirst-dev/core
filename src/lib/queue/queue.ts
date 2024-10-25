@@ -1,6 +1,6 @@
 import type { Queue as WorkerQueue } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
-import type { WaitUntilFunction } from "./types.js";
+import type { WaitUntilFunction } from "../types.js";
 
 export namespace Queue {
 	export type ContentType = "text" | "bytes" | "json" | "v8";

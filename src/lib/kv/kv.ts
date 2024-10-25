@@ -1,76 +1,6 @@
 import type { KVNamespace } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
 
-export namespace KV {
-	export interface Key<Meta = unknown> {
-		/** The name of the key. */
-		name: string;
-		/** The metadata stored along the key. */
-		meta: Meta | undefined;
-		/** The time-to-live of the key. */
-		ttl?: number;
-	}
-
-	export namespace Keys {
-		export type Prefix = string;
-
-		export interface Options {
-			/** The maximum number of keys to return. */
-			limit?: number;
-			/** The cursor to use when fetching more pages of keys. */
-			cursor?: string;
-		}
-
-		export type Result<Meta = unknown> =
-			| { keys: Key<Meta>[]; cursor: null; done: true }
-			| { keys: Key<Meta>[]; cursor: string; done: false };
-	}
-
-	export namespace Get {
-		export type Key = string;
-		export type Value = Jsonifiable;
-		export type Meta = Record<string, string>;
-
-		export interface Output<T, M = unknown> {
-			/**
-			 * The value stored along the key.
-			 * It will be null if the key was not found.
-			 */
-			data: T | null;
-			/**
-			 * The metadata stored along the key.
-			 */
-			meta: M | null;
-		}
-	}
-
-	export namespace Set {
-		export type Key = string;
-		export type Value = Jsonifiable;
-		export type Meta = Record<string, string>;
-
-		export interface Options<T extends Meta> {
-			/**
-			 * The time-to-live of the key.
-			 */
-			ttl?: number;
-			/**
-			 * Extra metadata to store along the key.
-			 */
-			metadata?: T;
-		}
-	}
-
-	export namespace Has {
-		export type Key = string;
-		export type Output = boolean;
-	}
-
-	export namespace Remove {
-		export type Key = string;
-	}
-}
-
 /**
  * Add a global, low-latency key-value data storage to your Edge-first
  * application.
@@ -161,5 +91,75 @@ export class KV {
 	 */
 	remove(key: KV.Remove.Key) {
 		return this.kv.delete(key);
+	}
+}
+
+export namespace KV {
+	export interface Key<Meta = unknown> {
+		/** The name of the key. */
+		name: string;
+		/** The metadata stored along the key. */
+		meta: Meta | undefined;
+		/** The time-to-live of the key. */
+		ttl?: number;
+	}
+
+	export namespace Keys {
+		export type Prefix = string;
+
+		export interface Options {
+			/** The maximum number of keys to return. */
+			limit?: number;
+			/** The cursor to use when fetching more pages of keys. */
+			cursor?: string;
+		}
+
+		export type Result<Meta = unknown> =
+			| { keys: Key<Meta>[]; cursor: null; done: true }
+			| { keys: Key<Meta>[]; cursor: string; done: false };
+	}
+
+	export namespace Get {
+		export type Key = string;
+		export type Value = Jsonifiable;
+		export type Meta = Record<string, string>;
+
+		export interface Output<T, M = unknown> {
+			/**
+			 * The value stored along the key.
+			 * It will be null if the key was not found.
+			 */
+			data: T | null;
+			/**
+			 * The metadata stored along the key.
+			 */
+			meta: M | null;
+		}
+	}
+
+	export namespace Set {
+		export type Key = string;
+		export type Value = Jsonifiable;
+		export type Meta = Record<string, string>;
+
+		export interface Options<T extends Meta> {
+			/**
+			 * The time-to-live of the key.
+			 */
+			ttl?: number;
+			/**
+			 * Extra metadata to store along the key.
+			 */
+			metadata?: T;
+		}
+	}
+
+	export namespace Has {
+		export type Key = string;
+		export type Output = boolean;
+	}
+
+	export namespace Remove {
+		export type Key = string;
 	}
 }

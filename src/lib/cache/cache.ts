@@ -1,6 +1,6 @@
 import type { KVNamespace } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
-import type { WaitUntilFunction } from "./types.js";
+import type { WaitUntilFunction } from "../types.js";
 
 /**
  * @group Cache

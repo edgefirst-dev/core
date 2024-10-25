@@ -1,5 +1,5 @@
-import { EdgeContextError, EdgeEnvKeyError } from "./errors.js";
-import type { Bindings } from "./types.js";
+import { EdgeContextError, EdgeEnvKeyError } from "../errors.js";
+import type { Bindings } from "../types.js";
 
 /**
  * Access environment variables in your Edge-first application.

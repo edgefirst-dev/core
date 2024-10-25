@@ -1,3 +1,7 @@
+/**
+ * Copied from Superflare scheduled tasks
+ * @see https://github.com/jplhomer/superflare/blob/cdeb3068e410340c7eb5f1b1d997bf95ae61e3a0/packages/superflare/src/scheduled.ts#L49-L55
+ */
 const where = {
 	minute: (minute: number) => (date: Date) => date.getMinutes() === minute,
 	hour: (hour: number) => (date: Date) => date.getHours() === hour,

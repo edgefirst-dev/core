@@ -1,7 +1,7 @@
 import type { Message } from "@cloudflare/workers-types";
 import type { Data } from "@edgefirst-dev/data";
 import { ObjectParser } from "@edgefirst-dev/data/parser";
-import { waitUntil } from "../wait-until.js";
+import { waitUntil } from "../storage/accessors.js";
 import type { Job } from "./job.js";
 
 /**
@@ -25,6 +25,10 @@ export class JobsManager {
 	/** A map storing the registered jobs, keyed by their class name. */
 	#jobs = new Map<string, Job<Data>>();
 
+	constructor(jobs: Job<Data>[]) {
+		for (let job of jobs) this.register(job);
+	}
+
 	/**
 	 * Registers a job instance with the `JobsManager`, allowing it to process
 	 * messages for that job.
@@ -36,7 +40,7 @@ export class JobsManager {
 	 * @example
 	 * manager.register(new MyJob());
 	 */
-	register<T extends Job<Data>>(job: T): void {
+	private register<T extends Job<Data>>(job: T): void {
 		this.#jobs.set(job.constructor.name, job);
 	}
 

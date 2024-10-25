@@ -1,13 +1,12 @@
 import type { ScheduledController } from "@cloudflare/workers-types";
-import { waitUntil } from "../wait-until.js";
+import { waitUntil } from "../storage/accessors.js";
 import type { Task } from "./task.js";
 
 export class TaskManager {
-	#tasks = new Set<Task>();
+	#tasks: Set<Task>;
 
-	schedule<T extends Task>(task: T) {
-		this.#tasks.add(task);
-		return this;
+	constructor(tasks: Task[]) {
+		this.#tasks = new Set(tasks);
 	}
 
 	process(event: ScheduledController): void {

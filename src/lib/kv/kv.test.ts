@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { MockKVNamespace } from "../mocks/cf.js";
+import { MockKVNamespace } from "../../mocks/cf.js";
 import { KV } from "./kv.js";
 
 describe(KV.name, () => {

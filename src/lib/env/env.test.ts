@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 
+import { EdgeEnvKeyError } from "../errors.js";
+import { Bindings } from "../types.js";
 import { Env } from "./env.js";
-import { EdgeEnvKeyError } from "./errors.js";
-import { Bindings } from "./types.js";
 
 describe(Env.name, () => {
 	let bindings = { KEY: "value" } as unknown as Bindings;
@@ -34,7 +34,7 @@ describe(Env.name, () => {
 });
 
 // Overwrite Bindings on this file
-declare module "./types.js" {
+declare module "../types.js" {
 	interface Bindings {
 		KEY: string;
 		OPTIONAL?: string;

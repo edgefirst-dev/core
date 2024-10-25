@@ -1,7 +1,7 @@
 import { describe, expect, mock, test } from "bun:test";
 
 import { FileUpload } from "@mjackson/form-data-parser";
-import { MockR2Bucket } from "../mocks/cf";
+import { MockR2Bucket } from "../../mocks/cf.js";
 import { FS } from "./fs.js";
 
 describe(FS.name, () => {

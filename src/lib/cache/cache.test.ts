@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { MockKVNamespace, waitUntilFactory } from "../mocks/cf.js";
+import { MockKVNamespace, waitUntilFactory } from "../../mocks/cf.js";
 import { Cache } from "./cache.js";
 
 describe(Cache.name, () => {
