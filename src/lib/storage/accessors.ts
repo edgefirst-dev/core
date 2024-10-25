@@ -23,14 +23,6 @@ export function cache() {
 }
 
 /**
- * Access a SQL database in your Edge-first application to store and retrieve
- * relational data.
- */
-export function db() {
-	return storage.access("db");
-}
-
-/**
  * Get a Drizzle ORM instance for your Edge-first application already connected
  * to your D1 database.
  */
