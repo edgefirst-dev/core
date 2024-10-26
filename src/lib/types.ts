@@ -1,3 +1,4 @@
+import type { BrowserWorker } from "@cloudflare/puppeteer";
 import type {
 	Ai,
 	D1Database,
@@ -17,6 +18,7 @@ export interface Bindings {
 	FS: R2Bucket;
 	KV: KVNamespace;
 	QUEUE: Queue;
+	BROWSER: BrowserWorker;
 }
 
 export interface DatabaseSchema extends Record<string, unknown> {}

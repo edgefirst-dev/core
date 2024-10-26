@@ -3,9 +3,7 @@
 	"version": "0.0.39",
 	"description": "The core of the Edge-first Stack",
 	"license": "MIT",
-	"funding": [
-		"https://github.com/sponsors/sergiodxa"
-	],
+	"funding": ["https://github.com/sponsors/sergiodxa"],
 	"author": {
 		"name": "Sergio Xalambrí",
 		"email": "hello+oss@sergiodxa.com",
@@ -31,17 +29,14 @@
 	"engines": {
 		"node": ">=20.0.0"
 	},
-	"files": [
-		"build",
-		"package.json",
-		"README.md"
-	],
+	"files": ["build", "package.json", "README.md"],
 	"exports": {
 		".": "./build/index.js",
 		"./worker": "./build/worker.js",
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
+		"@cloudflare/puppeteer": "^0.0.14",
 		"@cloudflare/workers-types": "^4.20241011.0",
 		"@edgefirst-dev/api-client": "^0.0.1",
 		"@edgefirst-dev/data": "^0.0.2",

@@ -1,3 +1,4 @@
+import cfPuppeteer, { type WorkersLaunchOptions } from "@cloudflare/puppeteer";
 import { storage } from "./storage.js";
 
 /**
@@ -134,4 +135,11 @@ export function rateLimit() {
 
 export function waitUntil(promise: Promise<unknown>) {
 	return storage.access("waitUntil")(promise);
+}
+
+export async function puppeteer(options?: WorkersLaunchOptions) {
+	let bindings = storage.access("bindings");
+	let browser = await cfPuppeteer.launch(bindings.BROWSER, options);
+	let page = await browser.newPage();
+	return { page, browser };
 }
