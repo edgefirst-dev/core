@@ -13,6 +13,7 @@ export { Job } from "./lib/jobs/job.js";
 export { Task } from "./lib/tasks/task.js";
 export {
 	ai,
+	bindings,
 	cache,
 	env,
 	fs,
