@@ -1,5 +1,5 @@
 import cfPuppeteer, { type WorkersLaunchOptions } from "@cloudflare/puppeteer";
-import { EdgeContextError } from "../errors.js";
+import { EdgeConfigError } from "../errors.js";
 import { storage } from "./storage.js";
 
 /**
@@ -144,7 +144,7 @@ export function bindings() {
 
 export async function puppeteer(options?: WorkersLaunchOptions) {
 	let bindings = storage.access("bindings");
-	if (!bindings.BROWSER) throw new EdgeContextError("bindings.BROWSER");
+	if (!bindings.BROWSER) throw new EdgeConfigError("BROWSER");
 	let browser = await cfPuppeteer.launch(bindings.BROWSER, options);
 	let page = await browser.newPage();
 	return { page, browser };
