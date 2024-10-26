@@ -20,6 +20,7 @@ export {
 	headers,
 	kv,
 	orm,
+	puppeteer,
 	queue,
 	rateLimit,
 	request,
