@@ -1,5 +1,5 @@
 export type { AI } from "./lib/ai/ai.js";
-export type { Bindings, DatabaseSchema } from "./lib/types.js";
+export type { Environment, DatabaseSchema } from "./lib/types.js";
 export type { Cache } from "./lib/cache/cache.js";
 export type { Env } from "./lib/env/env.js";
 export type { FS } from "./lib/fs/fs.js";

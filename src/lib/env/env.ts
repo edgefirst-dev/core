@@ -1,12 +1,12 @@
 import { EdgeContextError, EdgeEnvKeyError } from "../errors.js";
-import type { Bindings } from "../types.js";
+import type { Environment } from "../types.js";
 
 /**
  * Access environment variables in your Edge-first application.
  */
 export class Env {
-	constructor(protected bindings: Bindings) {
-		if (!bindings) throw new EdgeContextError("env().fetch");
+	constructor(protected env: Environment) {
+		if (!env) throw new EdgeContextError("env().fetch");
 	}
 
 	/**
@@ -17,11 +17,11 @@ export class Env {
 	 * @param fallback An optional fallback value to return if the key is not found.
 	 * @returns
 	 */
-	fetch<Key extends keyof Bindings>(
+	fetch<Key extends keyof Environment>(
 		key: Key,
-		fallback?: Bindings[Key],
-	): Bindings[Key] {
-		let data = this.bindings[key];
+		fallback?: Environment[Key],
+	): Environment[Key] {
+		let data = this.env[key];
 		if (data) return data;
 
 		if (fallback) return fallback;

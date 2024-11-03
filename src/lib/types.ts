@@ -12,13 +12,16 @@ export type WaitUntilFunction = ExecutionContext["waitUntil"];
 export type PassThroughOnExceptionFunction =
 	ExecutionContext["passThroughOnException"];
 
-export interface Bindings {
+export interface Environment {
+	// Cloudflare Bindings
 	AI: Ai;
 	DB: D1Database;
 	FS: R2Bucket;
 	KV: KVNamespace;
 	QUEUE: Queue;
 	BROWSER: BrowserWorker;
+	// Environment variables
+	VERIFIER_API_KEY?: string;
 }
 
 export interface DatabaseSchema extends Record<string, unknown> {}

@@ -13,15 +13,15 @@ import { Geo } from "../geo/geo.js";
 import { KV } from "../kv/kv.js";
 import { Queue } from "../queue/queue.js";
 import type {
-	Bindings,
 	DatabaseSchema,
+	Environment,
 	PassThroughOnExceptionFunction,
 	WaitUntilFunction,
 } from "../types.js";
 
 export interface EdgeFirstContext {
 	ai?: AI;
-	bindings: Bindings;
+	bindings: Environment;
 	cache?: Cache;
 	env: Env;
 	fs?: FS;
@@ -40,7 +40,7 @@ export interface EdgeFirstContext {
 
 class Storage extends AsyncLocalStorage<EdgeFirstContext> {
 	setup<T>(
-		{ request, bindings, ctx, options }: Storage.SetupOptions,
+		{ request, env, ctx, options }: Storage.SetupOptions,
 		callback: () => T,
 	) {
 		let waitUntil = ctx.waitUntil.bind(ctx);
@@ -48,22 +48,22 @@ class Storage extends AsyncLocalStorage<EdgeFirstContext> {
 
 		return this.run<T>(
 			{
-				ai: bindings.AI && new AI(bindings.AI),
-				bindings,
-				cache: bindings.KV && new Cache(bindings.KV, waitUntil),
-				env: new Env(bindings),
-				fs: bindings.FS && new FS(bindings.FS),
+				ai: env.AI && new AI(env.AI),
+				bindings: env,
+				cache: env.KV && new Cache(env.KV, waitUntil),
+				env: new Env(env),
+				fs: env.FS && new FS(env.FS),
 				geo: request && new Geo(request),
 				headers: request && new SuperHeaders(request.headers),
-				kv: bindings.KV && new KV(bindings.KV),
+				kv: env.KV && new KV(env.KV),
 				options,
-				orm: bindings.DB && options?.orm && drizzle(bindings.DB, options.orm),
+				orm: env.DB && options?.orm && drizzle(env.DB, options.orm),
 				passThroughOnException,
-				queue: bindings.QUEUE && new Queue(bindings.QUEUE, waitUntil),
+				queue: env.QUEUE && new Queue(env.QUEUE, waitUntil),
 				rateLimit:
-					bindings.KV &&
+					env.KV &&
 					new WorkerKVRateLimit(
-						bindings.KV,
+						env.KV,
 						options?.rateLimit ?? { limit: 100, period: 60 },
 					),
 				waitUntil,
@@ -87,7 +87,7 @@ export const storage = new Storage();
 
 export namespace Storage {
 	export interface SetupOptions {
-		bindings: Bindings;
+		env: Environment;
 		ctx: ExecutionContext;
 		request?: Request;
 		options: {

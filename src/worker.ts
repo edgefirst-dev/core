@@ -14,22 +14,22 @@ import { JobsManager } from "./lib/jobs/manager.js";
 import { storage } from "./lib/storage/storage.js";
 import { TaskManager } from "./lib/tasks/manager.js";
 import type { Task } from "./lib/tasks/task.js";
-import type { Bindings, DatabaseSchema } from "./lib/types.js";
+import type { DatabaseSchema, Environment } from "./lib/types.js";
 
 export function bootstrap(
 	options: bootstrap.Options,
-): ExportedHandler<Bindings> {
+): ExportedHandler<Environment> {
 	return {
-		async fetch(request, bindings, ctx) {
-			return storage.setup({ request, bindings, ctx, options }, () => {
-				return options.onRequest(request, bindings, ctx);
+		async fetch(request, env, ctx) {
+			return storage.setup({ request, env, ctx, options }, () => {
+				return options.onRequest(request, env, ctx);
 			});
 		},
 
-		scheduled(event, bindings, ctx) {
-			return storage.setup({ bindings, ctx, options }, () => {
+		scheduled(event, env, ctx) {
+			return storage.setup({ env, ctx, options }, () => {
 				if (options.onSchedule) {
-					return options.onSchedule(event, bindings, ctx);
+					return options.onSchedule(event, env, ctx);
 				}
 
 				let manager = new TaskManager(options.tasks?.() ?? []);
@@ -37,9 +37,9 @@ export function bootstrap(
 			});
 		},
 
-		queue(batch, bindings, ctx) {
-			return storage.setup({ bindings, ctx, options }, () => {
-				if (options.onQueue) return options.onQueue(batch, bindings, ctx);
+		queue(batch, env, ctx) {
+			return storage.setup({ env, ctx, options }, () => {
+				if (options.onQueue) return options.onQueue(batch, env, ctx);
 
 				let manager = new JobsManager(options.jobs?.() ?? []);
 
@@ -80,21 +80,21 @@ export namespace bootstrap {
 		/** The function that will run every time a new request comes in */
 		onRequest(
 			request: Request,
-			bindings: Bindings,
+			env: Environment,
 			ctx: ExecutionContext,
 		): Promise<Response>;
 
 		/** The function that will run every time a scheduled task is executed */
 		onSchedule?(
 			event: ScheduledController,
-			bindings: Bindings,
+			env: Environment,
 			ctx: ExecutionContext,
 		): Promise<void>;
 
 		/** The function that will run every time a queue message is consumed */
 		onQueue?(
 			batch: MessageBatch,
-			bindings: Bindings,
+			env: Environment,
 			ctx: ExecutionContext,
 		): Promise<void>;
 	}
