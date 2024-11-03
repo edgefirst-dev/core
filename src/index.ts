@@ -31,7 +31,9 @@ export {
 export { IPAddress } from "./lib/values/ip-address.js";
 export { Password } from "./lib/values/password.js";
 export { UserAgent } from "./lib/values/user-agent.js";
+export { Email } from "./lib/values/email.js";
 export { PwnedPasswords } from "./lib/clients/pwned-passwords.js";
+export { EmailVerifier } from "./lib/clients/email-verifier.js";
 export { StringParser, type CUID } from "./lib/parsers/string-parser.js";
 export { NumberParser } from "./lib/parsers/number-parser.js";
 export { Entity, TableEntity } from "./lib/entities/entity.js";

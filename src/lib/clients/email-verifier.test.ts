@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, mock, test } from "bun:test";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/native";
 import { Email } from "../values/email.js";
-import { EmailVerifier } from "./verifier";
+import { EmailVerifier } from "./email-verifier";
 
 mock.module("../storage/accessors.js", () => {
 	return {

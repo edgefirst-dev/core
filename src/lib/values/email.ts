@@ -1,7 +1,7 @@
 import { sha256 } from "@oslojs/crypto/sha2";
 import { encodeHexLowerCase } from "@oslojs/encoding";
 
-import { EmailVerifier } from "../clients/verifier.js";
+import { EmailVerifier } from "../clients/email-verifier.js";
 
 /**
  * The `Email` class represents an email address, providing methods to
