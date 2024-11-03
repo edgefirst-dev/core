@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, describe, expect, mock, test } from "bun:test";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/native";
-import { Email } from "./email.js";
+import { Email } from "../values/email.js";
 import { EmailVerifier } from "./verifier";
 
-mock.module("@edgefirst-dev/core", () => {
+mock.module("../storage/accessors.js", () => {
 	return {
 		orm: mock(),
 		env() {

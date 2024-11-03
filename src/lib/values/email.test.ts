@@ -1,12 +1,11 @@
 import { afterAll, beforeAll, describe, expect, mock, test } from "bun:test";
 
-import { APIClient } from "@edgefirst-dev/api-client";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/native";
+import { EmailVerifier } from "../clients/verifier";
 import { Email } from "./email";
-import { EmailVerifier } from "./verifier";
 
-mock.module("@edgefirst-dev/core", () => {
+mock.module("../storage/accessors.js", () => {
 	return {
 		env() {
 			return {
