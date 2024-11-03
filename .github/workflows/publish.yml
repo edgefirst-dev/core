@@ -5,28 +5,6 @@ on:
     types: [published]
 
 jobs:
-  publish-gpr:
-    name: "Publish to GitHub Package Registry"
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run build
-      - run: bun run exports
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "lts/*"
-          registry-url: https://npm.pkg.github.com/
-
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
   publish-npm:
     name: "Publish to npm"
     runs-on: ubuntu-latest
