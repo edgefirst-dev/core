@@ -67,9 +67,14 @@ export namespace bootstrap {
 
 		/** A function that returns the list of jobs to register */
 		jobs?(): Job<Data>[];
+
+		/** A function that returns the list of tasks to register */
 		tasks?(): Task[];
 
+		/** A function that will run if a job failed */
 		onJobError?(error: unknown, message: Message): void;
+
+		/** A function that will run if a task failed */
 		onTaskError?(error: unknown, task: Task): void;
 
 		/** The function that will run every time a new request comes in */

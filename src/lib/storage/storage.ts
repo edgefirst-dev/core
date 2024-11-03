@@ -11,6 +11,7 @@ import { EdgeContextError } from "../errors.js";
 import { FS } from "../fs/fs.js";
 import { Geo } from "../geo/geo.js";
 import { KV } from "../kv/kv.js";
+import type { Mailer } from "../mailer/mailer.js";
 import { Queue } from "../queue/queue.js";
 import type {
 	Bindings,
@@ -21,20 +22,21 @@ import type {
 
 export interface EdgeFirstContext {
 	ai?: AI;
-	fs?: FS;
-	kv?: KV;
-	env: Env;
-	geo?: Geo;
-	orm?: DrizzleD1Database<DatabaseSchema>;
-	cache?: Cache;
-	queue?: Queue;
-	signal?: AbortSignal;
-	headers?: SuperHeaders;
-	request?: Request;
 	bindings: Bindings;
-	rateLimit?: WorkerKVRateLimit;
-	waitUntil: WaitUntilFunction;
+	cache?: Cache;
+	env: Env;
+	fs?: FS;
+	geo?: Geo;
+	headers?: SuperHeaders;
+	kv?: KV;
+	options: Storage.SetupOptions["options"];
+	orm?: DrizzleD1Database<DatabaseSchema>;
 	passThroughOnException: PassThroughOnExceptionFunction;
+	queue?: Queue;
+	rateLimit?: WorkerKVRateLimit;
+	request?: Request;
+	signal?: AbortSignal;
+	waitUntil: WaitUntilFunction;
 }
 
 class Storage extends AsyncLocalStorage<EdgeFirstContext> {
@@ -55,6 +57,7 @@ class Storage extends AsyncLocalStorage<EdgeFirstContext> {
 				geo: request && new Geo(request),
 				headers: request && new SuperHeaders(request.headers),
 				kv: bindings.KV && new KV(bindings.KV),
+				options,
 				orm: bindings.DB && options?.orm && drizzle(bindings.DB, options.orm),
 				passThroughOnException,
 				queue: bindings.QUEUE && new Queue(bindings.QUEUE, waitUntil),
@@ -99,6 +102,9 @@ export namespace Storage {
 
 			/** The options for the rate limit. */
 			rateLimit?: WorkerKVRateLimit.Options;
+
+			/** The options for the mailer. */
+			mailer?: Mailer.SetupOptions;
 		};
 	}
 }

@@ -4,7 +4,7 @@ import { http } from "msw";
 import { setupServer } from "msw/native";
 import { Password } from "./password";
 
-mock.module("@edgefirst-dev/core", () => {
+mock.module("edgekitjs", () => {
 	return {
 		env() {
 			return {

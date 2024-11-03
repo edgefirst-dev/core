@@ -1,5 +1,5 @@
 {
-	"name": "@edgefirst-dev/core",
+	"name": "edgekitjs",
 	"version": "0.0.42",
 	"description": "The core of the Edge-first Stack",
 	"license": "MIT",
@@ -11,11 +11,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/edgefirst-dev/core"
+		"url": "https://github.com/edgefirst-dev/kit"
 	},
-	"homepage": "https://github.com/edgefirst-dev/core",
+	"homepage": "https://github.com/edgefirst-dev/kit",
 	"bugs": {
-		"url": "https://github.com/edgefirst-dev/core/issues"
+		"url": "https://github.com/edgefirst-dev/kit/issues"
 	},
 	"scripts": {
 		"build": "tsc",

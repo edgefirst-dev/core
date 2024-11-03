@@ -1,11 +1,11 @@
-# @edgefirst-dev/core
+# EdgeKit.js
 
 The core of the Edge-first Stack.
 
 ## Installation
 
 ```bash
-bun add @edgefirst-dev/core
+bun add edgekitjs
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ In your Cloudflare Worker, call the `bootstrap` function and export it.
 
 ```ts
 import schema from "db:schema";
-import { bootstrap } from "@edgefirst-dev/core/worker";
+import { bootstrap } from "edgekitjs/worker";
 
 export default bootstrap({
   orm: { schema },
@@ -46,7 +46,7 @@ async function getLoadContext(request: Request) {
   return { ua, ip };
 }
 
-declare module "@edgefirst-dev/core" {
+declare module "edgekitjs" {
   export interface Bindings {
     // Add your custom bindings here
   }
@@ -56,14 +56,14 @@ declare module "@edgefirst-dev/core" {
 }
 ```
 
-Now you can import the functions from `@edgefirst-dev/core` and use it in any part of your Remix app.
+Now you can import the functions from `edgekitjs` and use it in any part of your Remix app.
 
 ### env()
 
 The `env` function gives you access to the environment variables in a type-safe way.
 
 ```ts
-import { env } from "@edgefirst-dev/core";
+import { env } from "edgekitjs";
 ```
 
 > [!WARNING]
@@ -90,7 +90,7 @@ let SESSION_SECRET = env().fetch("SESSION_SECRET", "fallback");
 The `kv` function gives you access to a Key-Value store powered by Cloudflare Worker KV.
 
 ```ts
-import { kv } from "@edgefirst-dev/core";
+import { kv } from "edgekitjs";
 ```
 
 > [!WARNING]
@@ -173,7 +173,7 @@ let namespace = kv().binding;
 The `fs` function gives you an instance of [@mjackson/file-storage](https://www.npmjs.com/package/@mjackson/file-storage) powered by Cloudflare R2.
 
 ```ts
-import { fs } from "@edgefirst-dev/core";
+import { fs } from "edgekitjs";
 ```
 
 > [!WARNING]
@@ -236,7 +236,7 @@ let bucket = fs().binding;
 The `db` function gives you access to a database object powered by Cloudflare D1.
 
 ```ts
-import { db as edgeDb } from "@edgefirst-dev/core";
+import { db as edgeDb } from "edgekitjs";
 ```
 
 > [!WARNING]
@@ -268,7 +268,7 @@ let database = db().binding;
 The `orm` function gives you access to a database object powered by Cloudflare D1 and Drizzle ORM.
 
 ```ts
-import { orm } from "@edgefirst-dev/core";
+import { orm } from "edgekitjs";
 ```
 
 > [!WARN]
@@ -279,7 +279,7 @@ import { orm } from "@edgefirst-dev/core";
 The `cache` function gives you access to a cache object powered by Cloudflare Worker KV.
 
 ```ts
-import { cache } from "@edgefirst-dev/core";
+import { cache } from "edgekitjs";
 ```
 
 Every cached key will be prefixed by `cache:` to avoid conflicts with other keys.
@@ -333,7 +333,7 @@ let namespace = cache().binding;
 The `request` function gives you access to the current request object.
 
 ```ts
-import { request } from "@edgefirst-dev/core";
+import { request } from "edgekitjs";
 
 let url = new URL(request().url);
 request().headers.get("Authorization");
@@ -347,7 +347,7 @@ The `headers` function gives you access to the current request headers using [@m
 > Check [@mjackson's Headers documentation](https://github.com/mjackson/headers) to know what's possible with this library.
 
 ```ts
-import { headers } from "@edgefirst-dev/core";
+import { headers } from "edgekitjs";
 
 headers().cacheControl.maxAge;
 // And other properties of the library
@@ -358,7 +358,7 @@ headers().cacheControl.maxAge;
 The `signal` function gives you access to the current request signal.
 
 ```ts
-import { signal } from "@edgefirst-dev/core";
+import { signal } from "edgekitjs";
 signal().aborted;
 ```
 
@@ -367,7 +367,7 @@ signal().aborted;
 The `ai` object gives you access to the AI services powered by Cloudflare AI.
 
 ```ts
-import { ai } from "@edgefirst-dev/core";
+import { ai } from "edgekitjs";
 ```
 
 > [!WARNING]
@@ -472,7 +472,7 @@ let service = ai().binding;
 The `queue` object gives you access to a Queue publisher powered by Cloudflare Queue.
 
 ```ts
-import { queue } from "@edgefirst-dev/core";
+import { queue } from "edgekitjs";
 ```
 
 > [!WARNING]
@@ -505,7 +505,7 @@ let queue = queue().binding;
 The `geo` object gives you access to the geolocation data powered by Cloudflare CDN.
 
 ```ts
-import { geo } from "@edgefirst-dev/core";
+import { geo } from "edgekitjs";
 ```
 
 This function returns an object with the geolocation data. The object conforms to the interface:
@@ -533,7 +533,7 @@ interface Geo {
 The `rateLimit` object gives you access to the rate limiting object powered by Cloudflare Worker KV.
 
 ```ts
-import { rateLimit } from "@edgefirst-dev/core";
+import { rateLimit } from "edgekitjs";
 ```
 
 > [!WARNING]
@@ -576,7 +576,7 @@ import {
   EdgeContextError,
   EdgeEnvKeyError,
   EdgeRequestGeoError,
-} from "@edgefirst-dev/core";
+} from "edgekitjs";
 ```
 
 ### Override Bindings
@@ -584,9 +584,9 @@ import {
 You can override the bindings by creating a `d.ts` file in your project with this content
 
 ```ts
-import "@edgefirst-dev/core";
+import "edgekitjs";
 
-declare module "@edgefirst-dev/core" {
+declare module "edgekitjs" {
   interface Bindings {
     // Add your custom bindings here
   }
@@ -600,11 +600,11 @@ If you're using `wrangler types` to generate the types, you can make `Bindings` 
 Similarly, you can override the database schema by creating a `d.ts` file in your project with this content
 
 ```ts
-import "@edgefirst-dev/core";
+import "edgekitjs";
 
 import type * as schema from "~/db/schema"; // Your DB schema
 
-declare module "@edgefirst-dev/core" {
+declare module "edgekitjs" {
   interface DatabaseSchema extends schema {}
 }
 ```

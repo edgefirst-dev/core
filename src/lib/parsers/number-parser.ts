@@ -68,4 +68,12 @@ export class NumberParser extends Parser<number> {
 			unitDisplay: "narrow",
 		});
 	}
+
+	range(min: number, max: number) {
+		if (this.value < min || this.value > max) {
+			throw new Error(`Value must be between ${min} and ${max}`);
+		}
+
+		return this.value;
+	}
 }

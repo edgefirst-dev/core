@@ -18,6 +18,14 @@ export class EdgeConfigError extends EdgeError {
 	}
 }
 
+export class EdgeBootstrapConfigError extends EdgeError {
+	override name = "EdgeBootstrapConfigError";
+
+	constructor(key: string) {
+		super(`Configure ${key} in your bootstrap options.`);
+	}
+}
+
 export class EdgeEnvKeyError extends EdgeError {
 	override name = "EdgeEnvKeyError";
 

@@ -109,7 +109,7 @@ export function queue() {
  * provided, a new one will be created and returned.
  *
  * @example
- * import { rateLimit } from "@edgefirst-dev/core";
+ * import { rateLimit } from "edgekitjs";
  *
  * @example
  * let rateLimit = rateLimit();

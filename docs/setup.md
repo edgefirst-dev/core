@@ -6,12 +6,12 @@ category: Guides
 
 # Setup the Edge-first Runtime
 
-The Edge-first Runtime is what gives you access to the different functions you can import from `@edgefirst-dev/core`.
+The Edge-first Runtime is what gives you access to the different functions you can import from `edgekitjs`.
 
 Right now, the only way to setup this runtime is by using a Hono server, to do use you will have install the `edgeRuntime` middleware.
 
 ```ts
-import { edgeRuntime } from "@edgefirst-dev/core/hono";
+import { edgeRuntime } from "edgekitjs/hono";
 ```
 
 Then you can add it to any Hono application.
@@ -24,10 +24,10 @@ Any middleware after the `edgeRuntime` middleware will have access to the Edge-f
 
 ## Bindings
 
-The middleware expects the Bindings of the Hono application to be configured in a certain way, you can import the `Bindings` interface provided from `@edgefirst-dev/core` to use it in your application.
+The middleware expects the Bindings of the Hono application to be configured in a certain way, you can import the `Bindings` interface provided from `edgekitjs` to use it in your application.
 
 ```ts
-import type { Bindings } from "@edgefirst-dev/core";
+import type { Bindings } from "edgekitjs";
 
 const app = new Hono<{ Bindings: Bindings }>();
 ```
@@ -35,9 +35,9 @@ const app = new Hono<{ Bindings: Bindings }>();
 If you want to extend the Bindings with your own custom bindings, you can do so by extending the `Bindings` interface.
 
 ```ts
-import "@edgefirst-dev/core";
+import "edgekitjs";
 
-declare module "@edgefirst-dev/core" {
+declare module "edgekitjs" {
   interface Bindings {
     // Add your custom bindings here
   }
@@ -51,8 +51,8 @@ If you're using `wrangler types` to generate the types, you can make `Bindings` 
 To use Remix with the Edge-first Runtime, you can use the `remix-hono` package to create a Remix request handler and use it after the `edgeRuntime` middleware.
 
 ```ts
-import type { Bindings } from "@edgefirst-dev/core"; // Binding types
-import { edgeRuntime } from "@edgefirst-dev/core/hono"; // The Edge-first Runtime middleware
+import type { Bindings } from "edgekitjs"; // Binding types
+import { edgeRuntime } from "edgekitjs/hono"; // The Edge-first Runtime middleware
 import type { ServerBuild } from "@remix-run/cloudflare";
 import { Hono } from "hono";
 import { staticAssets } from "remix-hono/cloudflare";
