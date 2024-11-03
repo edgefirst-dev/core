@@ -11,7 +11,6 @@ import { EdgeContextError } from "../errors.js";
 import { FS } from "../fs/fs.js";
 import { Geo } from "../geo/geo.js";
 import { KV } from "../kv/kv.js";
-import type { Mailer } from "../mailer/mailer.js";
 import { Queue } from "../queue/queue.js";
 import type {
 	Bindings,
@@ -102,9 +101,6 @@ export namespace Storage {
 
 			/** The options for the rate limit. */
 			rateLimit?: WorkerKVRateLimit.Options;
-
-			/** The options for the mailer. */
-			mailer?: Mailer.SetupOptions;
 		};
 	}
 }
