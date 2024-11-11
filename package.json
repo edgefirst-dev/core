@@ -60,7 +60,7 @@
 		"type-fest": "^4.26.1"
 	},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.16.4",
+		"@arethetypeswrong/cli": "^0.17.0",
 		"@biomejs/biome": "^1.9.4",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/bcryptjs": "^2.4.6",
