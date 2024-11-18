@@ -48,7 +48,7 @@
 		"@edgefirst-dev/data": "^0.0.2",
 		"@edgefirst-dev/r2-file-storage": "^1.0.0",
 		"@edgefirst-dev/worker-kv-rate-limit": "^1.0.0",
-		"@mjackson/form-data-parser": "^0.4.0",
+		"@mjackson/form-data-parser": "^0.5.0",
 		"@mjackson/headers": "^0.7.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
