@@ -43,7 +43,7 @@
 		"@cloudflare/puppeteer": "^0.0.14",
 		"@edgefirst-dev/api-client": "^0.0.1",
 		"@edgefirst-dev/data": "^0.0.2",
-		"@edgefirst-dev/r2-file-storage": "^1.0.1",
+		"@edgefirst-dev/r2-file-storage": "^1.0.2",
 		"@edgefirst-dev/worker-kv-rate-limit": "^1.0.0",
 		"@mjackson/form-data-parser": "^0.5.0",
 		"@mjackson/headers": "^0.8.0",
