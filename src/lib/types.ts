@@ -9,8 +9,6 @@ import type {
 } from "@cloudflare/workers-types";
 
 export type WaitUntilFunction = ExecutionContext["waitUntil"];
-export type PassThroughOnExceptionFunction =
-	ExecutionContext["passThroughOnException"];
 
 export interface Environment {
 	// Cloudflare Bindings

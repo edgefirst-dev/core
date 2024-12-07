@@ -1,6 +1,5 @@
 import type { KVNamespace } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
-import type { WaitUntilFunction } from "../types.js";
 
 /**
  * @group Cache
@@ -38,10 +37,7 @@ export namespace Cache {
 export class Cache {
 	protected prefix = "cache";
 
-	constructor(
-		protected kv: KVNamespace,
-		protected waitUntil: WaitUntilFunction,
-	) {}
+	constructor(protected kv: KVNamespace) {}
 
 	/**
 	 * A read-only property that gives you the `KVNamespace` used by the Cache object.
@@ -99,11 +95,9 @@ export class Cache {
 
 		let result = await this.cb(ttlOrCb, callback)();
 
-		this.waitUntil(
-			this.kv.put(cacheKey, JSON.stringify(result), {
-				expirationTtl: this.ttl(ttlOrCb) || 60,
-			}),
-		);
+		await this.kv.put(cacheKey, JSON.stringify(result), {
+			expirationTtl: this.ttl(ttlOrCb) || 60,
+		});
 
 		return result;
 	}
@@ -115,8 +109,8 @@ export class Cache {
 	 * @example
 	 * cache().purge("key");
 	 */
-	purge(key: Cache.Key) {
-		this.waitUntil(this.kv.delete(this.getPrefixedKey(key)));
+	async purge(key: Cache.Key) {
+		await this.kv.delete(this.getPrefixedKey(key));
 	}
 
 	protected getPrefixedKey(key: Cache.Key): string {

@@ -1,7 +1,7 @@
 import type { Message } from "@cloudflare/workers-types";
 import type { Data } from "@edgefirst-dev/data";
 import { ObjectParser } from "@edgefirst-dev/data/parser";
-import { waitUntil } from "../storage/accessors.js";
+import { defer } from "../storage/accessors.js";
 import type { Job } from "./job.js";
 
 /**
@@ -68,7 +68,7 @@ export class JobsManager {
 		onError?: JobsManager.ErrorFunction,
 	): Promise<void> {
 		for (let message of batch.messages) {
-			waitUntil(this.process(message, onError));
+			defer(this.process(message, onError));
 		}
 	}
 

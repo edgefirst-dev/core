@@ -15,7 +15,6 @@ import { Queue } from "../queue/queue.js";
 import type {
 	DatabaseSchema,
 	Environment,
-	PassThroughOnExceptionFunction,
 	WaitUntilFunction,
 } from "../types.js";
 
@@ -30,7 +29,6 @@ export interface EdgeFirstContext {
 	kv?: KV;
 	options: Storage.SetupOptions["options"];
 	orm?: DrizzleD1Database<DatabaseSchema>;
-	passThroughOnException: PassThroughOnExceptionFunction;
 	queue?: Queue;
 	rateLimit?: WorkerKVRateLimit;
 	request?: Request;
@@ -44,13 +42,12 @@ class Storage extends AsyncLocalStorage<EdgeFirstContext> {
 		callback: () => T,
 	) {
 		let waitUntil = ctx.waitUntil.bind(ctx);
-		let passThroughOnException = ctx.passThroughOnException.bind(ctx);
 
 		return this.run<T>(
 			{
 				ai: env.AI && new AI(env.AI),
 				bindings: env,
-				cache: env.KV && new Cache(env.KV, waitUntil),
+				cache: env.KV && new Cache(env.KV),
 				env: new Env(env),
 				fs: env.FS && new FS(env.FS),
 				geo: request && new Geo(request),
@@ -58,8 +55,7 @@ class Storage extends AsyncLocalStorage<EdgeFirstContext> {
 				kv: env.KV && new KV(env.KV),
 				options,
 				orm: env.DB && options?.orm && drizzle(env.DB, options.orm),
-				passThroughOnException,
-				queue: env.QUEUE && new Queue(env.QUEUE, waitUntil),
+				queue: env.QUEUE && new Queue(env.QUEUE),
 				rateLimit:
 					env.KV &&
 					new WorkerKVRateLimit(
@@ -88,7 +84,7 @@ export const storage = new Storage();
 export namespace Storage {
 	export interface SetupOptions {
 		env: Environment;
-		ctx: ExecutionContext;
+		ctx: Pick<ExecutionContext, "waitUntil">;
 		request?: Request;
 		options: {
 			/** The options for the ORM. */

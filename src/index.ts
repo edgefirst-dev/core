@@ -26,7 +26,7 @@ export {
 	rateLimit,
 	request,
 	signal,
-	waitUntil,
+	defer as waitUntil,
 } from "./lib/storage/accessors.js";
 export { IPAddress } from "./lib/values/ip-address.js";
 export { Password } from "./lib/values/password.js";

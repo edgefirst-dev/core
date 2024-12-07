@@ -22,7 +22,9 @@ describe(FS.name, () => {
 
 	test("#keys", async () => {
 		let r2 = new MockR2Bucket([
+			// @ts-expect-error - missing metadata
 			["test:1", { key: "test:1" }],
+			// @ts-expect-error - missing metadata
 			["2", { key: "2" }],
 		]);
 
@@ -39,6 +41,7 @@ describe(FS.name, () => {
 	});
 
 	test("#keys with prefix", async () => {
+		// @ts-expect-error - missing metadata
 		let r2 = new MockR2Bucket([["test:1", { key: "test:1" }]]);
 
 		let fs = new FS(r2);
@@ -55,7 +58,9 @@ describe(FS.name, () => {
 
 	test("#keys with limit", async () => {
 		let r2 = new MockR2Bucket([
+			// @ts-expect-error - missing metadata
 			["test:1", { key: "test:1" }],
+			// @ts-expect-error - missing metadata
 			["2", { key: "2" }],
 		]);
 
@@ -73,7 +78,9 @@ describe(FS.name, () => {
 
 	test("#keys with cursor", async () => {
 		let r2 = new MockR2Bucket([
+			// @ts-expect-error - missing metadata
 			["test:1", { key: "test:1" }],
+			// @ts-expect-error - missing metadata
 			["2", { key: "2" }],
 		]);
 
@@ -94,6 +101,7 @@ describe(FS.name, () => {
 		let r2 = new MockR2Bucket([
 			[
 				"test:1",
+				// @ts-expect-error - missing metadata
 				{ key: "test:1", arrayBuffer: () => Promise.resolve(arrayBuffer) },
 			],
 		]);
@@ -112,6 +120,7 @@ describe(FS.name, () => {
 		let r2 = new MockR2Bucket([
 			[
 				"test:1",
+				// @ts-expect-error - missing metadata
 				{ key: "test:1", arrayBuffer: () => Promise.resolve(arrayBuffer) },
 			],
 		]);
@@ -158,6 +167,7 @@ describe(FS.name, () => {
 		let r2 = new MockR2Bucket([
 			[
 				"test:1",
+				// @ts-expect-error - missing metadata
 				{
 					key: "test:1",
 					arrayBuffer: () => Promise.resolve(arrayBuffer),
@@ -183,6 +193,7 @@ describe(FS.name, () => {
 		let r2 = new MockR2Bucket([
 			[
 				"test:1",
+				// @ts-expect-error - missing metadata
 				{
 					key: "test:1",
 					arrayBuffer: () => Promise.resolve(arrayBuffer),

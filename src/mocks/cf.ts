@@ -11,13 +11,6 @@ import type {
 	R2ObjectBody,
 } from "@cloudflare/workers-types";
 import type { Jsonifiable } from "type-fest";
-import type { WaitUntilFunction } from "../lib/types.js";
-
-export function waitUntilFactory() {
-	return mock<WaitUntilFunction>().mockImplementation(
-		(promise: Promise<unknown>) => void 0,
-	);
-}
 
 export class MockKVNamespace implements KVNamespace {
 	#data: Map<string, { value: ArrayBuffer; metadata?: unknown }>;

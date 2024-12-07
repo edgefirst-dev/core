@@ -134,7 +134,21 @@ export function rateLimit() {
 	return storage.access("rateLimit");
 }
 
-export function waitUntil(promise: Promise<unknown>) {
+/**
+ * When you want to run a async process but don't want to block your application
+ * to wait for it to finish, you can use the `defer` function.
+ *
+ * This let you run the async process as a run and forget, the process will run
+ * in the background until it's completed and the Worker will not shutdown in
+ * the meantime.
+ *
+ * In many cases this can solve the problem of a background Job too, but
+ * consider that in case of failure the process will not be retried.
+ * @param promise The promise to defer
+ * @example
+ * defer(analytics.track("event", { user }));
+ */
+export function defer(promise: Promise<unknown>) {
 	return storage.access("waitUntil")(promise);
 }
 
