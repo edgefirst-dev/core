@@ -67,7 +67,7 @@ export class Cache {
 	 *   // do something expensive and return the value
 	 * });
 	 *
-	 * @description The TTL is optional, it defaults to 60 seconds if not provided.
+	 * // The TTL is optional, it defaults to 60 seconds if not provided.
 	 *
 	 * @example
 	 * await cache().fetch("another-key", async () => {

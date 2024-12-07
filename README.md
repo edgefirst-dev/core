@@ -21,7 +21,7 @@ EdgeKit.js is a toolkit to helps you build on top of Cloudflare Development Plat
 Create a new Edge-first app using EdgeKit.js with the following command:
 
 ```bash
-npx degit edgefirst-dev/starter-worker my-app
+npx degit edgefirst-dev/starter my-app
 ```
 
 This will give you a new Cloudflare Worker project with EdgeKit.js already setup and React Router v7.
